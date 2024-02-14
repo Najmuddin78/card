@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:business_card/color_palette.dart';
@@ -31,15 +32,19 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       print('Email: $_email, Password: $_password');
-      // Simulating a sign-in process
-      Future.delayed(const Duration(seconds: 2), () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const NavigationPage(),
-          ),
-        );
-      }).then((_) {
+
+      Future.delayed(
+        const Duration(seconds: 1),
+        () {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const NavigationPage(),
+            ),
+            (route) => false, // Remove all routes until the new one
+          );
+        },
+      ).then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -92,9 +97,8 @@ class _LoginPageState extends State<LoginPage> {
                             Text(
                               'Welcome Back!',
                               style: GoogleFonts.poppins(
-                                fontSize: 24,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: ColorPalette.buttonText,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -102,7 +106,6 @@ class _LoginPageState extends State<LoginPage> {
                               'Log In to your account',
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.bold,
-                                color: ColorPalette.buttonText,
                               ),
                             ),
                           ],
@@ -112,7 +115,6 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(
-                        // labelText: 'Email',
                         hintText: 'Enter your email',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -134,7 +136,6 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(
-                        // labelText: 'Password',
                         hintText: 'Enter your password',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -145,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                         if (value == null ||
                             value.isEmpty ||
                             value.trim().length < 4) {
-                          return 'Please enter a valid email';
+                          return 'Please enter a valid password';
                         }
                         return null;
                       },
@@ -201,3 +202,19 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
+// void main() {
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Business Card',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       home: LoginPage(),
+//     );
+//   }
+// }

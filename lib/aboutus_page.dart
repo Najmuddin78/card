@@ -72,10 +72,14 @@ class _AboutUsPageState extends State<AboutUsPage> {
         title: const Text('About Us'),
         backgroundColor: ColorPalette.appBarBackground,
         foregroundColor: ColorPalette.appBarText,
-        automaticallyImplyLeading: false,
+        leading: Image.asset(
+          'assets/images/logo.png',
+          width: 120,
+          height: 120,
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -84,13 +88,12 @@ class _AboutUsPageState extends State<AboutUsPage> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(width: 1),
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: _bannerImage.isEmpty
                       ? const Text('No image selected.')
                       : ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(16),
                           child: Image.file(
                             File(_bannerImage),
                             width: double.infinity,
@@ -103,16 +106,18 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 ElevatedButton(
                   onPressed: _pickImage,
                   style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 24),
                     backgroundColor: ColorPalette.buttonBackground,
                     foregroundColor: ColorPalette.buttonText,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text('Select Image from Gallery',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: const Text(
+                    'Select Image from Gallery',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const SizedBox(height: 16.0),
                 buildTextFormField(
@@ -134,7 +139,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
                     backgroundColor: ColorPalette.buttonBackground,
                     foregroundColor: ColorPalette.buttonText,
                     shape: RoundedRectangleBorder(
@@ -150,6 +156,9 @@ class _AboutUsPageState extends State<AboutUsPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
+                const Divider(
+                  color: Colors.black,
+                ),
                 const SizedBox(height: 8),
                 SizedBox(
                   width: double.infinity,
@@ -161,7 +170,6 @@ class _AboutUsPageState extends State<AboutUsPage> {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: ColorPalette.buttonText,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -171,6 +179,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
                         children: _highlightFields
                             .map((field) {
                               return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Checkbox(
@@ -185,8 +195,9 @@ class _AboutUsPageState extends State<AboutUsPage> {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               const SnackBar(
-                                                  content: Text(
-                                                      'You can only select up to 4 checkboxes')),
+                                                content: Text(
+                                                    'You can only select up to 4 checkboxes'),
+                                              ),
                                             );
                                           }
                                         } else {
@@ -198,11 +209,12 @@ class _AboutUsPageState extends State<AboutUsPage> {
                                   ),
                                   Text(field['name']),
                                   if (field['enabled'] == true)
+                                    //const SizedBox(width: 20),
                                     SizedBox(
                                       width: 100,
                                       child: TextFormField(
                                         decoration: InputDecoration(
-                                          hintText: 'Rating',
+                                          //hintText:
                                           border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10.0),
@@ -241,6 +253,9 @@ class _AboutUsPageState extends State<AboutUsPage> {
                   ),
                 ),
                 const SizedBox(height: 32),
+                const Divider(
+                  color: Colors.black,
+                ),
                 const Text(
                   'Testimonials',
                   style: TextStyle(
@@ -292,7 +307,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
           borderRadius: BorderRadius.circular(10.0),
         ),
         contentPadding:
-            const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+            const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
       ),
       validator: (value) {
         if (value?.isEmpty ?? true) {

@@ -1,8 +1,7 @@
 import 'dart:io';
-
-import 'package:business_card/color_palette.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'color_palette.dart';
 
 class PaymentDetailsPage extends StatefulWidget {
   const PaymentDetailsPage({Key? key}) : super(key: key);
@@ -33,7 +32,11 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
         title: const Text('Payment Details'),
         backgroundColor: ColorPalette.appBarBackground,
         foregroundColor: ColorPalette.appBarText,
-        automaticallyImplyLeading: false,
+        leading: Image.asset(
+          'assets/images/logo.png',
+          width: 120,
+          height: 120,
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -49,15 +52,32 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                 _ifscCodeController, 'IFSC Code', _bankDetailsError),
             _buildTextField(
                 _accountTypeController, 'Account Type', _bankDetailsError),
-            _buildButton('Save Bank Payment Details', _saveBankDetails),
+            const SizedBox(height: 16.0),
+            _customButton('Save Bank Payment Details', _saveBankDetails,
+                ColorPalette.buttonText, ColorPalette.buttonBackground),
+            const SizedBox(
+                height:
+                    16.0), // SizedBox after the Save Bank Payment Details button
+            const Divider(
+              color: Colors.black,
+            ), // Divider after the Save Bank Payment Details button
             _buildSectionTitle('UPI Payment Details'),
             _buildTextField(
                 _upiNameController, 'Receiver Name', _upiDetailsError),
             _buildTextField(
                 _upiNumberController, 'UPI Number or ID', _upiDetailsError),
-            _buildButton('Save UPI Payment Details', _saveUpiDetails),
+            const SizedBox(height: 16.0),
+            _customButton('Save UPI Payment Details', _saveUpiDetails,
+                ColorPalette.buttonText, ColorPalette.buttonBackground),
+            const SizedBox(height: 16.0),
+            const Divider(
+              color: Colors.black,
+            ), // Divider after the Save UPI Payment Details button
             _buildSectionTitle('QR Payment Details'),
-            _buildButton('Upload QR Code', _showImagePicker),
+            const SizedBox(height: 16.0),
+            _customButton('Upload QR Code', _showImagePicker,
+                ColorPalette.buttonText, ColorPalette.buttonBackground),
+            const SizedBox(height: 16),
             Container(
               color: Colors.grey[200],
               height: 200.0,
@@ -66,8 +86,13 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                       _qrImage!,
                       fit: BoxFit.cover,
                     )
-                  : const Center(child: Text('No QR code selected')),
+                  : const Center(
+                      child: Text(
+                        'No QR code selected',
+                      ),
+                    ),
             ),
+            const SizedBox(height: 16.0),
           ],
         ),
       ),
@@ -76,10 +101,13 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 20.0),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -96,8 +124,8 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
             borderRadius: BorderRadius.circular(10.0),
           ),
           errorText: errorText,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-          hintStyle: const TextStyle(color: Colors.grey),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.blue),
             borderRadius: BorderRadius.circular(10.0),
@@ -115,18 +143,36 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
     );
   }
 
-  Widget _buildButton(String label, VoidCallback onPressed) {
+  Widget _customButton(String label, VoidCallback onPressed, Color textColor,
+      Color backgroundColor) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          _buildButton(label, onPressed, textColor, backgroundColor),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildButton(String label, VoidCallback onPressed, Color textColor,
+      Color backgroundColor) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: ColorPalette.buttonBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        backgroundColor: backgroundColor,
+        elevation: 4,
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: ColorPalette.buttonText,
+          color: textColor,
         ),
       ),
     );

@@ -5,12 +5,10 @@ import 'package:business_card/login_page.dart';
 final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
-    brightness: Brightness.dark,
-    seedColor: const Color.fromARGB(27, 0, 198, 243),
+    brightness: Brightness.light,
+    seedColor: const Color.fromARGB(255, 27, 143, 221),
   ),
 );
-
-
 
 void main() {
   runApp(const MyApp());

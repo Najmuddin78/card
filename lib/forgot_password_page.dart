@@ -14,10 +14,14 @@ class ForgotPasswordPage extends StatelessWidget {
         title: const Text('Forgot Password'),
         backgroundColor: ColorPalette.appBarBackground,
         foregroundColor: ColorPalette.appBarText,
-        automaticallyImplyLeading: false,
+        leading: Image.asset(
+          'assets/images/logo.png',
+          width: 120,
+          height: 120,
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -52,6 +56,9 @@ class ForgotPasswordPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ColorPalette.buttonBackground,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                 ),
                 child: const Text(
                   'Reset Password',

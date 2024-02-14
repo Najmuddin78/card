@@ -69,7 +69,11 @@ class _ContactUsPageState extends State<ContactUsPage> {
         title: const Text('Contact Us'),
         backgroundColor: ColorPalette.appBarBackground,
         foregroundColor: ColorPalette.appBarText,
-        automaticallyImplyLeading: false,
+        leading: Image.asset(
+          'assets/images/logo.png',
+          width: 120,
+          height: 120,
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -94,8 +98,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Colors.grey),
                   ),
-                  contentPadding: const EdgeInsets.all(12),
-                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Colors.blue),
@@ -110,7 +114,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: emailController,
                 decoration: InputDecoration(
@@ -120,8 +124,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Colors.grey),
                   ),
-                  contentPadding: const EdgeInsets.all(12),
-                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Colors.blue),
@@ -136,7 +140,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: contactNumberController,
                 decoration: InputDecoration(
@@ -146,8 +150,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Colors.grey),
                   ),
-                  contentPadding: const EdgeInsets.all(12),
-                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Colors.blue),
@@ -162,7 +166,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: officeAddressController,
                 maxLines: 3,
@@ -173,8 +177,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Colors.grey),
                   ),
-                  contentPadding: const EdgeInsets.all(12),
-                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Colors.blue),
@@ -196,13 +200,18 @@ class _ContactUsPageState extends State<ContactUsPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   backgroundColor: ColorPalette.buttonBackground,
                 ),
                 child: const Text(
                   'Save',
                   style: buttonTextStyle,
                 ),
+              ),
+              const SizedBox(height: 16), // SizedBox after the Save button
+              const Divider(
+                color: Colors.black,
               ),
               const SizedBox(height: 20),
               const Text(

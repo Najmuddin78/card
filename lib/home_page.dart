@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:business_card/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,18 +15,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController companyNameController = TextEditingController();
-  TextEditingController companyCategoryController = TextEditingController();
   TextEditingController whatsappController = TextEditingController();
   TextEditingController youtubeController = TextEditingController();
   TextEditingController twitterController = TextEditingController();
   TextEditingController instagramController = TextEditingController();
   TextEditingController facebookController = TextEditingController();
 
-  String _companyName = '';
   String _companyCategory = '';
   Color _selectedColor = ColorPalette.buttonBackground;
   XFile? _image;
-  Color _selectColorButtonColor = ColorPalette.buttonBackground;
 
   String? _companyNameError;
   String? _companyCategoryError;
@@ -35,6 +33,29 @@ class _HomePageState extends State<HomePage> {
   String? _instagramError;
   String? _facebookError;
 
+  List<String> companyCategories = [
+    'Agriculture & Forestry',
+    'Arts & Entertainment',
+    'Automotive',
+    'Beauty & Personal Care',
+    'Construction & Real Estate',
+    'Education',
+    'Finance & Insurance',
+    'Food & Beverage',
+    'Health & Wellness',
+    'Hospitality & Tourism',
+    'Information Technology',
+    'Manufacturing',
+    'Marketing & Advertising',
+    'Media & Communications',
+    'Professional Services',
+    'Retail & E-commerce',
+    'Sports & Recreation',
+    'Transportation & Logistics',
+    'Utilities',
+    'Other',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +63,24 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Home'),
         backgroundColor: ColorPalette.appBarBackground,
         foregroundColor: ColorPalette.appBarText,
-        automaticallyImplyLeading: false,
+        leading: Image.asset(
+          'assets/images/logo.png',
+          width: 120,
+          height: 120,
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginPage(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -55,12 +93,11 @@ class _HomePageState extends State<HomePage> {
                 const Text(
                   'Home Page Edits',
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: ColorPalette.buttonText,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10), // Adjusted height
                 _buildTextFormField(
                   'Enter Company Name',
                   (value) {
@@ -70,25 +107,13 @@ class _HomePageState extends State<HomePage> {
                     return null;
                   },
                   (value) {
-                    _companyName = value!;
+                    // Update companyNameController value
                   },
                   companyNameController,
                   _companyNameError,
                 ),
-                _buildTextFormField(
-                  'Select Company Category',
-                  (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select company category';
-                    }
-                    return null;
-                  },
-                  (value) {
-                    _companyCategory = value!;
-                  },
-                  companyCategoryController,
-                  _companyCategoryError,
-                ),
+                _buildCategoryDropdown(),
+                const SizedBox(height: 20),
                 _buildImagePicker(),
                 _buildColorPicker(),
                 const SizedBox(height: 24.0),
@@ -98,18 +123,20 @@ class _HomePageState extends State<HomePage> {
                   },
                   text: 'Save Changes',
                   icon: Icons.save,
-                  isSelectColorButton: false,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
+                const Divider(
+                  color: Colors.black,
+                ),
+                const SizedBox(height: 10),
                 const Text(
                   'Social Media Section',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: ColorPalette.buttonText,
                   ),
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 10),
                 _buildAdditionalFormFields(),
                 const SizedBox(height: 16.0),
                 _buildElevatedButton(
@@ -118,7 +145,6 @@ class _HomePageState extends State<HomePage> {
                   },
                   text: 'Save Social Media',
                   icon: Icons.save,
-                  isSelectColorButton: false,
                 ),
               ],
             ),
@@ -141,7 +167,8 @@ class _HomePageState extends State<HomePage> {
         TextFormField(
           controller: controller,
           decoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(10),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
             hintText: hintText,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -165,33 +192,30 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildElevatedButton(
-      {required VoidCallback onPressed,
-      required String text,
-      required IconData icon,
-      required bool isSelectColorButton}) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon),
-      label: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: ColorPalette.buttonText,
+  Widget _buildElevatedButton({
+    required VoidCallback onPressed,
+    required String text,
+    required IconData icon,
+  }) {
+    return SizedBox(
+      height: 56.0,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon),
+        label: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: ColorPalette.buttonText,
+          ),
         ),
-      ),
-      style: ElevatedButton.styleFrom(
-        foregroundColor: ColorPalette.buttonText,
-        backgroundColor: isSelectColorButton
-            ? _selectColorButtonColor
-            : ColorPalette.buttonBackground,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        padding: const EdgeInsets.symmetric(
-          vertical: 16,
-          horizontal: 24,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: ColorPalette.buttonBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         ),
       ),
     );
@@ -201,36 +225,38 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ElevatedButton.icon(
-          onPressed: () async {
-            final pickedFile =
-                await ImagePicker().pickImage(source: ImageSource.gallery);
-            if (pickedFile != null) {
-              setState(() {
-                _image = XFile(pickedFile.path);
-              });
-            }
-          },
-          icon: const Icon(Icons.image),
-          label: const Text(
-            'Choose Image',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: ColorPalette.buttonText,
+        SizedBox(
+          height: 56.0,
+          child: ElevatedButton.icon(
+            onPressed: () async {
+              final pickedFile =
+                  await ImagePicker().pickImage(source: ImageSource.gallery);
+              if (pickedFile != null) {
+                setState(() {
+                  _image = XFile(pickedFile.path);
+                });
+              }
+            },
+            icon: const Icon(Icons.image),
+            label: const Text(
+              'Choose Company Logo',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: ColorPalette.buttonText,
+              ),
             ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: ColorPalette.buttonBackground,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            padding: const EdgeInsets.symmetric(
-              vertical: 16,
-              horizontal: 24,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ColorPalette.buttonBackground,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
             ),
           ),
         ),
+        const SizedBox(height: 16.0),
         if (_image != null) _buildSelectedImage(),
         const SizedBox(height: 16.0),
       ],
@@ -257,27 +283,30 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ElevatedButton.icon(
-          onPressed: () {
-            _showColorPickerDialog(context);
-          },
-          icon: const Icon(Icons.color_lens),
-          label: const Text(
-            'Select Color',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: ColorPalette.buttonText,
+        SizedBox(
+          height: 56.0,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              _showColorPickerDialog(context);
+            },
+            icon: const Icon(Icons.color_lens),
+            label: const Text(
+              'Please select any color of Your Theme',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: ColorPalette.buttonText,
+              ),
             ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: ColorPalette.buttonBackground,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            padding: const EdgeInsets.symmetric(
-              vertical: 16,
-              horizontal: 24,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _selectedColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              padding: const EdgeInsets.symmetric(
+                vertical: 16,
+                horizontal: 24,
+              ),
             ),
           ),
         ),
@@ -286,8 +315,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showColorPickerDialog(BuildContext context) {
-    showDialog(
+  Future<void> _showColorPickerDialog(BuildContext context) async {
+    Color? newColor = _selectedColor;
+    newColor = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -296,33 +326,75 @@ class _HomePageState extends State<HomePage> {
             child: ColorPicker(
               pickerColor: _selectedColor,
               onColorChanged: (Color color) {
-                setState(() {
-                  _selectedColor = color;
-                });
+                newColor = color;
               },
               showLabel: true,
               pickerAreaHeightPercent: 0.8,
             ),
           ),
-          actions: [
+          actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(newColor);
               },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _selectColorButtonColor = _selectedColor;
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('Select'),
+              child: const Text('OK'),
             ),
           ],
         );
       },
+    );
+
+    if (newColor != null) {
+      setState(() {
+        _selectedColor = newColor!;
+      });
+    }
+  }
+
+  Widget _buildCategoryDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DropdownButtonFormField<String>(
+          value: _companyCategory.isNotEmpty ? _companyCategory : null,
+          decoration: InputDecoration(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+            hintText: 'Select Company Category',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: const BorderSide(color: Colors.blue),
+            ),
+          ),
+          items: companyCategories.map((String category) {
+            return DropdownMenuItem<String>(
+              value: category,
+              child: Text(
+                category,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: ColorPalette.buttonText,
+                ),
+              ),
+            );
+          }).toList(),
+          onChanged: (String? value) {
+            setState(() {
+              _companyCategory = value ?? '';
+            });
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please select company category';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16.0),
+      ],
     );
   }
 
@@ -331,62 +403,72 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTextFormField(
-          'Whatsapp Number',
+          'Enter WhatsApp Link',
           (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter WhatsApp number';
+              return 'Please enter WhatsApp link';
             }
             return null;
           },
-          null,
+          (value) {
+            // Update whatsappController value
+          },
           whatsappController,
           _whatsappError,
         ),
         _buildTextFormField(
-          'Youtube Link',
+          'Enter YouTube Link',
           (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter YouTube link';
             }
             return null;
           },
-          null,
+          (value) {
+            // Update youtubeController value
+          },
           youtubeController,
           _youtubeError,
         ),
         _buildTextFormField(
-          'Twitter Link',
+          'Enter Twitter Link',
           (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter Twitter link';
             }
             return null;
           },
-          null,
+          (value) {
+            // Update twitterController value
+          },
           twitterController,
           _twitterError,
         ),
         _buildTextFormField(
-          'Instagram Link',
+          'Enter Instagram Link',
           (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter Instagram link';
             }
             return null;
           },
-          null,
+          (value) {
+            // Update instagramController value
+          },
           instagramController,
           _instagramError,
         ),
         _buildTextFormField(
-          'Facebook Link',
+          'Enter Facebook Link',
           (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter Facebook link';
             }
             return null;
           },
-          null,
+          (value) {
+            // Update facebookController value
+          },
           facebookController,
           _facebookError,
         ),
@@ -395,32 +477,46 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _saveChangesFormData(BuildContext context) {
-    setState(() {
-      _companyNameError = companyNameController.text.isEmpty
-          ? 'Please enter company name'
-          : null;
-      _companyCategoryError = companyCategoryController.text.isEmpty
-          ? 'Please select company category'
-          : null;
-    });
+    final isValidCompanyName = _validateCompanyName();
+    final isValidCompanyCategory = _validateCompanyCategory();
 
-    if (_companyNameError == null && _companyCategoryError == null) {
-      // Save the form data to the database
-      print(
-          'Save Changes: Company Name: $_companyName, Category: $_companyCategory');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Data inserted successfully'),
-        ),
-      );
+    if (!isValidCompanyName || !isValidCompanyCategory) {
+      return;
     }
+
+    // Proceed with saving changes or any other action
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Changes saved successfully!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+
+    // Clear text fields after saving
+    companyNameController.clear();
+    // Clear other text fields if needed
+  }
+
+  bool _validateCompanyName() {
+    final isValid = companyNameController.text.isNotEmpty;
+    setState(() {
+      _companyNameError = isValid ? null : 'Please enter company name';
+    });
+    return isValid;
+  }
+
+  bool _validateCompanyCategory() {
+    final isValid = _companyCategory.isNotEmpty;
+    setState(() {
+      _companyCategoryError = isValid ? null : 'Please select company category';
+    });
+    return isValid;
   }
 
   void _validateAndSaveSocialMediaData(BuildContext context) {
     setState(() {
-      _whatsappError = whatsappController.text.isEmpty
-          ? 'Please enter WhatsApp number'
-          : null;
+      _whatsappError =
+          whatsappController.text.isEmpty ? 'Please enter WhatsApp link' : null;
       _youtubeError =
           youtubeController.text.isEmpty ? 'Please enter YouTube link' : null;
       _twitterError =
@@ -437,18 +533,31 @@ class _HomePageState extends State<HomePage> {
         _twitterError == null &&
         _instagramError == null &&
         _facebookError == null) {
-      // Save additional form data (social media links) to the database
-      print('Save Social Media Data:');
-      print('Whatsapp: ${whatsappController.text}');
-      print('Youtube: ${youtubeController.text}');
-      print('Twitter: ${twitterController.text}');
-      print('Instagram: ${instagramController.text}');
-      print('Facebook: ${facebookController.text}');
+      // All fields are valid, proceed with saving data or other operations
+      // Save changes to database or perform any other action
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Social Media Data inserted successfully'),
+          content: Text('Social media links saved successfully!'),
+          duration: Duration(seconds: 2),
         ),
       );
+
+      whatsappController.clear();
+      youtubeController.clear();
+      twitterController.clear();
+      instagramController.clear();
+      facebookController.clear();
     }
+  }
+
+  @override
+  void dispose() {
+    companyNameController.dispose();
+    whatsappController.dispose();
+    youtubeController.dispose();
+    twitterController.dispose();
+    instagramController.dispose();
+    facebookController.dispose();
+    super.dispose();
   }
 }
