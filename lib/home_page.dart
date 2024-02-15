@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 10), // Adjusted height
+                const SizedBox(height: 10),
                 _buildTextFormField(
                   'Enter Company Name',
                   (value) {
@@ -167,7 +167,8 @@ class _HomePageState extends State<HomePage> {
         TextFormField(
           controller: controller,
           decoration: InputDecoration(
-            contentPadding:const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
             hintText: hintText,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -181,7 +182,7 @@ class _HomePageState extends State<HomePage> {
           ),
           style: const TextStyle(
             fontSize: 16,
-            color: ColorPalette.buttonText,
+            color: ColorPalette.text,
           ),
           validator: validator,
           onSaved: onSaved,
@@ -250,8 +251,8 @@ class _HomePageState extends State<HomePage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             ),
           ),
         ),
@@ -375,7 +376,7 @@ class _HomePageState extends State<HomePage> {
                 category,
                 style: const TextStyle(
                   fontSize: 16,
-                  color: ColorPalette.buttonText,
+                  color: ColorPalette.text,
                 ),
               ),
             );

@@ -144,8 +144,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     DataCell(Text(portfolio.imageName)),
                     DataCell(Text(portfolio.imageCategory)),
                     DataCell(
-                      GestureDetector(
-                        onTap: () {
+                      TextButton(
+                        onPressed: () {
                           toggleStatus(index);
                         },
                         child: Text(
@@ -166,6 +166,11 @@ class _PortfolioPageState extends State<PortfolioPage> {
                                 context: context,
                                 builder: (context) => EditPortfolioDialog(
                                   portfolio: portfolio,
+                                  onPortfolioEdited: (editedPortfolio) {
+                                    setState(() {
+                                      portfolios[index] = editedPortfolio;
+                                    });
+                                  },
                                   onDelete: () => deletePortfolio(index),
                                 ),
                               );
@@ -281,6 +286,14 @@ class _AddPortfolioDialogState extends State<AddPortfolioDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                ElevatedButton(
+                  onPressed: getImage,
+                  child: const Text('Select Image'),
+                ),
+                const SizedBox(height: 16),
+                _image == null
+                    ? const Text('No image selected.')
+                    : Image.file(_image!),
                 TextFormField(
                   controller: _imageNameController,
                   decoration:
@@ -296,8 +309,8 @@ class _AddPortfolioDialogState extends State<AddPortfolioDialog> {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _imageCategoryController,
-                  decoration:
-                      const InputDecoration(labelText: 'Enter Image Category'),
+                  decoration: const InputDecoration(
+                      labelText: 'Enter Image Category'),
                   style: const TextStyle(fontSize: 16),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -305,14 +318,6 @@ class _AddPortfolioDialogState extends State<AddPortfolioDialog> {
                     }
                     return null;
                   },
-                ),
-                const SizedBox(height: 16),
-                _image == null
-                    ? const Text('No image selected.')
-                    : Image.file(_image!),
-                ElevatedButton(
-                  onPressed: getImage,
-                  child: const Text('Select Image'),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -332,7 +337,8 @@ class _AddPortfolioDialogState extends State<AddPortfolioDialog> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           String imageName = _imageNameController.text;
-                          String imageCategory = _imageCategoryController.text;
+                          String imageCategory =
+                              _imageCategoryController.text;
                           Portfolio portfolio = Portfolio(
                             imageName: imageName,
                             imageCategory: imageCategory,
@@ -355,47 +361,127 @@ class _AddPortfolioDialogState extends State<AddPortfolioDialog> {
   }
 }
 
-class EditPortfolioDialog extends StatelessWidget {
+class EditPortfolioDialog extends StatefulWidget {
   final Portfolio portfolio;
+  final Function(Portfolio) onPortfolioEdited;
   final Function onDelete;
 
   const EditPortfolioDialog({
     Key? key,
     required this.portfolio,
+    required this.onPortfolioEdited,
     required this.onDelete,
   }) : super(key: key);
+
+  @override
+  _EditPortfolioDialogState createState() => _EditPortfolioDialogState();
+}
+
+class _EditPortfolioDialogState extends State<EditPortfolioDialog> {
+  File? _image;
+  TextEditingController _imageNameController = TextEditingController();
+  TextEditingController _imageCategoryController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _imageNameController.text = widget.portfolio.imageName;
+    _imageCategoryController.text = widget.portfolio.imageCategory;
+  }
+
+  Future getImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  ElevatedButton buildElevatedButton({
+    required String text,
+    required Function onPressed,
+    Color? backgroundColor,
+    Color? textColor,
+  }) {
+    return ElevatedButton(
+      onPressed: () => onPressed(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: backgroundColor ?? ColorPalette.buttonBackground,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: textColor ?? Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Edit Portfolio'),
-      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Image Name: ${portfolio.imageName}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Image Category: ${portfolio.imageCategory}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: Image.file(
-              File(portfolio.imagePath),
-              fit: BoxFit.cover,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _image == null
+                ? Image.file(
+                    File(widget.portfolio.imagePath),
+                    fit: BoxFit.cover,
+                  )
+                : Image.file(
+                    _image!,
+                    fit: BoxFit.cover,
+                  ),
+            ElevatedButton(
+              onPressed: getImage,
+              child: const Text('Select Image'),
             ),
-          ),
-        ],
+            TextFormField(
+              controller: _imageNameController,
+              decoration:
+                  const InputDecoration(labelText: 'Enter Image Name'),
+              style: const TextStyle(fontSize: 16),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter image name';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _imageCategoryController,
+              decoration: const InputDecoration(
+                  labelText: 'Enter Image Category'),
+              style: const TextStyle(fontSize: 16),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter image category';
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
       ),
       actions: [
         ElevatedButton(
           onPressed: () {
-            onDelete();
+            widget.onDelete();
             Navigator.of(context).pop();
           },
           style: ElevatedButton.styleFrom(
@@ -406,13 +492,25 @@ class EditPortfolioDialog extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            if (_imageNameController.text.isNotEmpty &&
+                _imageCategoryController.text.isNotEmpty) {
+              Portfolio editedPortfolio = Portfolio(
+                imageName: _imageNameController.text,
+                imageCategory: _imageCategoryController.text,
+                imagePath: _image != null
+                    ? _image!.path
+                    : widget.portfolio.imagePath,
+                isActive: widget.portfolio.isActive,
+              );
+              widget.onPortfolioEdited(editedPortfolio);
+              Navigator.of(context).pop();
+            }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.green,
             foregroundColor: ColorPalette.buttonText,
           ),
-          child: const Text('Cancel'),
+          child: const Text('Save'),
         ),
       ],
     );

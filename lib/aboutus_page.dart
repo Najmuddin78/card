@@ -209,7 +209,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                                   ),
                                   Text(field['name']),
                                   if (field['enabled'] == true)
-                                    //const SizedBox(width: 20),
+                                    const SizedBox(width: 20),
                                     SizedBox(
                                       width: 100,
                                       child: TextFormField(

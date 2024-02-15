@@ -131,78 +131,84 @@ class _ServicePageState extends State<ServicePage> {
                 rows: services.asMap().entries.map((serviceEntry) {
                   int index = serviceEntry.key;
                   Service service = serviceEntry.value;
-                  return DataRow(cells: [
-                    DataCell(
-                      SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: Image.file(
-                          File(service.imagePath),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    DataCell(Text(service.serviceName)),
-                    DataCell(Text(service.serviceDescription)),
-                    DataCell(
-                      GestureDetector(
-                        onTap: () {
-                          toggleStatus(index);
-                        },
-                        child: Text(
-                          service.isActive ? 'Active' : 'Inactive',
-                          style: TextStyle(
-                            color: service.isActive ? Colors.green : Colors.red,
+                  return DataRow(
+                    cells: [
+                      DataCell(
+                        SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: Image.file(
+                            File(service.imagePath),
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                    ),
-                    DataCell(
-                      Row(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => EditServiceDialog(
-                                  service: service,
-                                  onDelete: () => deleteService(index),
+                      DataCell(Text(service.serviceName)),
+                      DataCell(Text(service.serviceDescription)),
+                      DataCell(
+                        TextButton(
+                          onPressed: () {
+                            toggleStatus(index);
+                          },
+                          child: Text(
+                            service.isActive ? 'Active' : 'Inactive',
+                            style: TextStyle(
+                              color:
+                                  service.isActive ? Colors.green : Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Row(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => EditServiceDialog(
+                                      service: service,
+                                      onDelete: () => deleteService(index),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: ColorPalette.buttonText,
                                 ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: ColorPalette.buttonText,
-                            ),
-                            child: const Text(
-                              'Edit',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                child: const Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          ElevatedButton(
-                            onPressed: () {
-                              deleteService(index);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              foregroundColor: ColorPalette.buttonText,
-                            ),
-                            child: const Text(
-                              'Delete',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                              const SizedBox(width: 8.0),
+                              ElevatedButton(
+                                onPressed: () {
+                                  deleteService(index);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: ColorPalette.buttonText,
+                                ),
+                                child: const Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ]);
+                    ],
+                  );
                 }).toList(),
               ),
             ),
@@ -355,7 +361,7 @@ class _ServiceDialogState extends State<ServiceDialog> {
   }
 }
 
-class EditServiceDialog extends StatelessWidget {
+class EditServiceDialog extends StatefulWidget {
   final Service service;
   final Function onDelete;
 
@@ -366,37 +372,146 @@ class EditServiceDialog extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _EditServiceDialogState createState() => _EditServiceDialogState();
+}
+
+class _EditServiceDialogState extends State<EditServiceDialog> {
+  late File? _image;
+  final picker = ImagePicker();
+  late TextEditingController _serviceNameController;
+  late TextEditingController _serviceDescriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _serviceNameController =
+        TextEditingController(text: widget.service.serviceName);
+    _serviceDescriptionController =
+        TextEditingController(text: widget.service.serviceDescription);
+    _image = File(widget.service.imagePath);
+  }
+
+  @override
+  void dispose() {
+    _serviceNameController.dispose();
+    _serviceDescriptionController.dispose();
+    super.dispose();
+  }
+
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  ElevatedButton buildElevatedButton({
+    required String text,
+    required Function onPressed,
+    Color? backgroundColor,
+    Color? textColor,
+  }) {
+    return ElevatedButton(
+      onPressed: () => onPressed(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: backgroundColor ?? ColorPalette.buttonBackground,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: textColor ?? Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Edit Service'),
       contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.file(
-            File(service.imagePath),
-            width: 200,
-            height: 200,
-            fit: BoxFit.cover,
-          ),
-          const SizedBox(height: 16),
-          Text('Service Name: ${service.serviceName}'),
-          const SizedBox(height: 8),
-          Text('Service Description: ${service.serviceDescription}'),
-        ],
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.file(
+              _image!,
+              width: 200,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: getImage,
+              child: const Text('Change Image'),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _serviceNameController,
+              decoration: const InputDecoration(labelText: 'Service Name'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter service name';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _serviceDescriptionController,
+              decoration:
+                  const InputDecoration(labelText: 'Service Description'),
+              maxLines: 3,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter service description';
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
       ),
       actions: [
         ElevatedButton(
           onPressed: () {
-            onDelete();
+            widget.onDelete();
             Navigator.of(context).pop();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
-            foregroundColor: ColorPalette.buttonText,
+            foregroundColor: Colors.white,
           ),
           child: const Text('Delete'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_serviceNameController.text.isNotEmpty &&
+                _serviceDescriptionController.text.isNotEmpty) {
+              widget.service.serviceName = _serviceNameController.text;
+              widget.service.serviceDescription =
+                  _serviceDescriptionController.text;
+              widget.service.imagePath = _image!.path;
+              Navigator.of(context).pop();
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+          ),
+          child: const Text('Save'),
         ),
         ElevatedButton(
           onPressed: () {
@@ -404,7 +519,7 @@ class EditServiceDialog extends StatelessWidget {
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
-            foregroundColor: ColorPalette.buttonText,
+            foregroundColor: Colors.black,
           ),
           child: const Text('Cancel'),
         ),
@@ -414,9 +529,9 @@ class EditServiceDialog extends StatelessWidget {
 }
 
 class Service {
-  final String serviceName;
-  final String serviceDescription;
-  final String imagePath;
+  String serviceName;
+  String serviceDescription;
+  String imagePath;
   bool isActive;
 
   Service({
