@@ -38,8 +38,7 @@ class _NavigationPageState extends State<NavigationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnimatedSwitcher(
-        duration: Duration(milliseconds: 500),
-        child: _pages[_selectedIndex],
+        duration: const Duration(milliseconds: 500),
         switchInCurve: Curves.easeIn,
         switchOutCurve: Curves.easeOut,
         transitionBuilder: (child, animation) {
@@ -48,6 +47,7 @@ class _NavigationPageState extends State<NavigationPage> {
             child: child,
           );
         },
+        child: _pages[_selectedIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

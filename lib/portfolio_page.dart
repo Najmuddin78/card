@@ -127,88 +127,96 @@ class _PortfolioPageState extends State<PortfolioPage> {
                   DataColumn(label: Text('Status')),
                   DataColumn(label: Text('Action')),
                 ],
-                rows: portfolios.asMap().entries.map((portfolioEntry) {
-                  int index = portfolioEntry.key;
-                  Portfolio portfolio = portfolioEntry.value;
-                  return DataRow(cells: [
-                    DataCell(
-                      SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: Image.file(
-                          File(portfolio.imagePath),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    DataCell(Text(portfolio.imageName)),
-                    DataCell(Text(portfolio.imageCategory)),
-                    DataCell(
-                      TextButton(
-                        onPressed: () {
-                          toggleStatus(index);
-                        },
-                        child: Text(
-                          portfolio.isActive ? 'Active' : 'Inactive',
-                          style: TextStyle(
-                            color:
-                                portfolio.isActive ? Colors.green : Colors.red,
+                rows: portfolios
+                    .asMap()
+                    .entries
+                    .map((portfolioEntry) {
+                      int index = portfolioEntry.key;
+                      Portfolio portfolio = portfolioEntry.value;
+                      return DataRow(cells: [
+                        DataCell(
+                          SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Image.file(
+                              File(portfolio.imagePath),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    DataCell(
-                      Row(
-                        children: [
-                          ElevatedButton(
+                        DataCell(Text(portfolio.imageName)),
+                        DataCell(Text(portfolio.imageCategory)),
+                        DataCell(
+                          TextButton(
                             onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => EditPortfolioDialog(
-                                  portfolio: portfolio,
-                                  onPortfolioEdited: (editedPortfolio) {
-                                    setState(() {
-                                      portfolios[index] = editedPortfolio;
-                                    });
-                                  },
-                                  onDelete: () => deletePortfolio(index),
+                              toggleStatus(index);
+                            },
+                            child: Text(
+                              portfolio.isActive ? 'Active' : 'Inactive',
+                              style: TextStyle(
+                                color: portfolio.isActive
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => EditPortfolioDialog(
+                                      portfolio: portfolio,
+                                      onPortfolioEdited: (editedPortfolio) {
+                                        setState(() {
+                                          portfolios[index] = editedPortfolio;
+                                        });
+                                      },
+                                      onDelete: () => deletePortfolio(index),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: ColorPalette.buttonText,
                                 ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: ColorPalette.buttonText,
-                            ),
-                            child: const Text(
-                              'Edit',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                child: const Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          ElevatedButton(
-                            onPressed: () {
-                              deletePortfolio(index);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              foregroundColor: ColorPalette.buttonText,
-                            ),
-                            child: const Text(
-                              'Delete',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                              const SizedBox(width: 8.0),
+                              ElevatedButton(
+                                onPressed: () {
+                                  deletePortfolio(index);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: ColorPalette.buttonText,
+                                ),
+                                child: const Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ]);
-                }).toList(),
+                        ),
+                      ]);
+                    })
+                    .map((dataRow) => DataRow(
+                          cells: dataRow.cells,
+                        ))
+                    .toList(),
               ),
             ),
           ),
@@ -309,8 +317,8 @@ class _AddPortfolioDialogState extends State<AddPortfolioDialog> {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _imageCategoryController,
-                  decoration: const InputDecoration(
-                      labelText: 'Enter Image Category'),
+                  decoration:
+                      const InputDecoration(labelText: 'Enter Image Category'),
                   style: const TextStyle(fontSize: 16),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -337,8 +345,7 @@ class _AddPortfolioDialogState extends State<AddPortfolioDialog> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           String imageName = _imageNameController.text;
-                          String imageCategory =
-                              _imageCategoryController.text;
+                          String imageCategory = _imageCategoryController.text;
                           Portfolio portfolio = Portfolio(
                             imageName: imageName,
                             imageCategory: imageCategory,
@@ -452,8 +459,7 @@ class _EditPortfolioDialogState extends State<EditPortfolioDialog> {
             ),
             TextFormField(
               controller: _imageNameController,
-              decoration:
-                  const InputDecoration(labelText: 'Enter Image Name'),
+              decoration: const InputDecoration(labelText: 'Enter Image Name'),
               style: const TextStyle(fontSize: 16),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -465,8 +471,8 @@ class _EditPortfolioDialogState extends State<EditPortfolioDialog> {
             const SizedBox(height: 8),
             TextFormField(
               controller: _imageCategoryController,
-              decoration: const InputDecoration(
-                  labelText: 'Enter Image Category'),
+              decoration:
+                  const InputDecoration(labelText: 'Enter Image Category'),
               style: const TextStyle(fontSize: 16),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -497,9 +503,8 @@ class _EditPortfolioDialogState extends State<EditPortfolioDialog> {
               Portfolio editedPortfolio = Portfolio(
                 imageName: _imageNameController.text,
                 imageCategory: _imageCategoryController.text,
-                imagePath: _image != null
-                    ? _image!.path
-                    : widget.portfolio.imagePath,
+                imagePath:
+                    _image != null ? _image!.path : widget.portfolio.imagePath,
                 isActive: widget.portfolio.isActive,
               );
               widget.onPortfolioEdited(editedPortfolio);

@@ -39,6 +39,8 @@ dependencies:
 
   flutter_colorpicker: ^1.0.3
   image_picker: ^1.0.7
+  shared_preferences: ^2.2.2
+  flutter_riverpod: ^2.4.10
 
 dev_dependencies:
   flutter_test:
