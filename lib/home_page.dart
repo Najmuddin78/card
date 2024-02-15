@@ -167,8 +167,7 @@ class _HomePageState extends State<HomePage> {
         TextFormField(
           controller: controller,
           decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+            contentPadding:const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
             hintText: hintText,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),

@@ -78,7 +78,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                               insetPadding: EdgeInsets.zero,
                               child: SlideTransition(
                                 position: Tween<Offset>(
-                                  begin: Offset(0.0, 1.0),
+                                  begin: const Offset(0.0, 1.0),
                                   end: Offset.zero,
                                 ).animate(animation),
                                 child: AddPortfolioDialog(
@@ -279,14 +279,8 @@ class _AddPortfolioDialogState extends State<AddPortfolioDialog> {
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _image == null
-                    ? const Text('No image selected.')
-                    : Image.file(_image!),
-                ElevatedButton(
-                  onPressed: getImage,
-                  child: const Text('Select Image'),
-                ),
                 TextFormField(
                   controller: _imageNameController,
                   decoration:
@@ -299,6 +293,7 @@ class _AddPortfolioDialogState extends State<AddPortfolioDialog> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _imageCategoryController,
                   decoration:
@@ -310,6 +305,14 @@ class _AddPortfolioDialogState extends State<AddPortfolioDialog> {
                     }
                     return null;
                   },
+                ),
+                const SizedBox(height: 16),
+                _image == null
+                    ? const Text('No image selected.')
+                    : Image.file(_image!),
+                ElevatedButton(
+                  onPressed: getImage,
+                  child: const Text('Select Image'),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -366,20 +369,27 @@ class EditPortfolioDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Edit Portfolio'),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.file(
-            File(portfolio.imagePath),
-            width: 200,
-            height: 200,
-            fit: BoxFit.cover,
+          Text(
+            'Image Name: ${portfolio.imageName}',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Image Category: ${portfolio.imageCategory}',
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          Text('Image Name: ${portfolio.imageName}'),
-          const SizedBox(height: 8),
-          Text('Image Category: ${portfolio.imageCategory}'),
+          Expanded(
+            child: Image.file(
+              File(portfolio.imagePath),
+              fit: BoxFit.cover,
+            ),
+          ),
         ],
       ),
       actions: [

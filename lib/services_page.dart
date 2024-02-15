@@ -369,6 +369,7 @@ class EditServiceDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Edit Service'),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
