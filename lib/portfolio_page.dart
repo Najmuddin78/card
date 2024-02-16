@@ -91,10 +91,9 @@ class _PortfolioPageState extends State<PortfolioPage> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 8.0),
+                      padding: const EdgeInsets.symmetric( horizontal: 16.0, vertical: 8.0),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                       elevation: 0,
                       backgroundColor: ColorPalette.buttonBackground,

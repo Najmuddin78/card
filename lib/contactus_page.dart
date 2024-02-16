@@ -200,6 +200,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
+                  elevation: 0,
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 8.0),
                   backgroundColor: ColorPalette.buttonBackground,
@@ -209,7 +210,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                   style: buttonTextStyle,
                 ),
               ),
-              const SizedBox(height: 16), // SizedBox after the Save button
+              const SizedBox(height: 16), 
               const Divider(
                 color: Colors.black,
               ),

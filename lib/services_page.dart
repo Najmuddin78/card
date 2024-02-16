@@ -262,6 +262,7 @@ class _ServiceDialogState extends State<ServiceDialog> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
+         elevation: 0,
       ),
       child: Text(
         text,

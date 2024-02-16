@@ -55,10 +55,13 @@ class ForgotPasswordPage extends StatelessWidget {
                   }
                 },
                 style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   backgroundColor: ColorPalette.buttonBackground,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
+                  elevation: 0,
                 ),
                 child: const Text(
                   'Reset Password',
@@ -85,7 +88,7 @@ class ForgotPasswordPage extends StatelessWidget {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) =>  LoginPage(),
+        builder: (context) => const LoginPage(),
       ),
     );
   }

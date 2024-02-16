@@ -157,15 +157,12 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                         onPressed: _isLoading ? null : _trySubmit,
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 32,
-                          ),
+                          padding: const EdgeInsets.symmetric( horizontal: 16.0, vertical: 8.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           backgroundColor: ColorPalette.buttonBackground,
-                          elevation: 4,
+                          elevation: 0,
                         ),
                         child: _isLoading
                             ? const CircularProgressIndicator()

@@ -4,8 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:business_card/navigation_page.dart';
 import 'package:business_card/login_page.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
 final theme = ThemeData(
@@ -16,14 +20,10 @@ final theme = ThemeData(
   ),
 );
 
-final isLoggedInProvider = FutureProvider.autoDispose<bool>((ref) async {
-  final prefs = await SharedPreferences.getInstance();
-  final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-  return isLoggedIn;
-});
-
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+
+  const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,26 +31,17 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Business Card',
         theme: theme,
-        home: const LoginPage(),
+        home: isLoggedIn ? const NavigationPage() : const AuthenticationWrapper(),
       ),
     );
   }
 }
 
 class AuthenticationWrapper extends ConsumerWidget {
-  const AuthenticationWrapper({super.key});
+  const AuthenticationWrapper({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<bool> isLoggedInAsync = ref.watch(isLoggedInProvider);
-    return isLoggedInAsync.when(
-      data: (isLoggedIn) {
-        return isLoggedIn ? const LoginPage() : const NavigationPage();
-      },
-      loading: () => const CircularProgressIndicator(),
-      error: (error, stackTrace) {
-        return Text('Error: $error');
-      },
-    );
+    return const LoginPage();
   }
 }

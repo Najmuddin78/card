@@ -165,7 +165,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
           borderRadius: BorderRadius.circular(10.0),
         ),
         backgroundColor: backgroundColor,
-        elevation: 4,
+        elevation: 0,
       ),
       child: Text(
         label,

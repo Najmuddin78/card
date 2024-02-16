@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:business_card/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:business_card/color_palette.dart';
+import 'login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -58,95 +58,111 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        backgroundColor: ColorPalette.appBarBackground,
-        foregroundColor: ColorPalette.appBarText,
-        leading: Image.asset(
-          'assets/images/logo.png',
-          width: 120,
-          height: 120,
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>  LoginPage(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.logout),
+    return MaterialApp(
+      theme: ThemeData(
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            elevation: 0,
+            backgroundColor: ColorPalette.buttonBackground,
+            foregroundColor: ColorPalette.buttonText,
           ),
-        ],
+        ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Home Page Edits',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Home'),
+          backgroundColor: ColorPalette.appBarBackground,
+          foregroundColor: ColorPalette.appBarText,
+          leading: Image.asset(
+            'assets/images/logo.png',
+            width: 120,
+            height: 120,
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
                   ),
-                ),
-                const SizedBox(height: 10),
-                _buildTextFormField(
-                  'Enter Company Name',
-                  (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter company name';
-                    }
-                    return null;
-                  },
-                  (value) {
-                    // Update companyNameController value
-                  },
-                  companyNameController,
-                  _companyNameError,
-                ),
-                _buildCategoryDropdown(),
-                const SizedBox(height: 20),
-                _buildImagePicker(),
-                _buildColorPicker(),
-                const SizedBox(height: 24.0),
-                _buildElevatedButton(
-                  onPressed: () {
-                    _saveChangesFormData(context);
-                  },
-                  text: 'Save Changes',
-                  icon: Icons.save,
-                ),
-                const SizedBox(height: 20),
-                const Divider(
-                  color: Colors.black,
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Social Media Section',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                );
+              },
+              icon: const Icon(Icons.logout),
+            ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Home Page Edits',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                _buildAdditionalFormFields(),
-                const SizedBox(height: 16.0),
-                _buildElevatedButton(
-                  onPressed: () {
-                    _validateAndSaveSocialMediaData(context);
-                  },
-                  text: 'Save Social Media',
-                  icon: Icons.save,
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  _buildTextFormField(
+                    'Enter Company Name',
+                    (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter company name';
+                      }
+                      return null;
+                    },
+                    (value) {
+                      // Update companyNameController value
+                    },
+                    companyNameController,
+                    _companyNameError,
+                  ),
+                  _buildCategoryDropdown(),
+                  const SizedBox(height: 20),
+                  _buildImagePicker(),
+                  _buildColorPicker(),
+                  const SizedBox(height: 20.0),
+                  _buildElevatedButton(
+                    onPressed: () {
+                      _saveChangesFormData(context);
+                    },
+                    text: 'Save Changes',
+                    icon: Icons.save,
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(
+                    color: Colors.black,
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Social Media Section',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _buildAdditionalFormFields(),
+                  const SizedBox(height: 16.0),
+                  _buildElevatedButton(
+                    onPressed: () {
+                      _validateAndSaveSocialMediaData(context);
+                    },
+                    text: 'Save Social Media',
+                    icon: Icons.save,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -198,7 +214,7 @@ class _HomePageState extends State<HomePage> {
     required IconData icon,
   }) {
     return SizedBox(
-      height: 56.0,
+      height: 45.0,
       child: ElevatedButton.icon(
         onPressed: onPressed,
         icon: Icon(icon),
@@ -210,13 +226,6 @@ class _HomePageState extends State<HomePage> {
             color: ColorPalette.buttonText,
           ),
         ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: ColorPalette.buttonBackground,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        ),
       ),
     );
   }
@@ -226,7 +235,7 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 56.0,
+          height: 45.0,
           child: ElevatedButton.icon(
             onPressed: () async {
               final pickedFile =
@@ -245,14 +254,6 @@ class _HomePageState extends State<HomePage> {
                 fontWeight: FontWeight.bold,
                 color: ColorPalette.buttonText,
               ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorPalette.buttonBackground,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             ),
           ),
         ),
@@ -284,7 +285,7 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 56.0,
+          height: 45.0,
           child: ElevatedButton.icon(
             onPressed: () {
               _showColorPickerDialog(context);
@@ -299,14 +300,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: _selectedColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              padding: const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 24,
-              ),
+              backgroundColor: _selectedColor, 
             ),
           ),
         ),
