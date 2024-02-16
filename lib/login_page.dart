@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:business_card/color_palette.dart';
 import 'package:business_card/navigation_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,7 +18,10 @@ class _LoginPageState extends State<LoginPage> {
   String _password = '';
   bool _isLoading = false;
 
-  void _trySubmit() {
+  Future<void> _trySubmit() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+   await  prefs.setBool('isLoggedIn', true);
+
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
       _formKey.currentState!.save();
@@ -145,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                           if (value == null ||
                               value.isEmpty ||
                               value.trim().length < 4) {
-                            return 'Please enter a valid password';
+                            return 'Please enter a a password';
                           }
                           return null;
                         },
@@ -157,7 +161,8 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                         onPressed: _isLoading ? null : _trySubmit,
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric( horizontal: 16.0, vertical: 8.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),

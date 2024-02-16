@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:business_card/color_palette.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'login_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -85,13 +86,8 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
-                  ),
-                );
+              onPressed: () async {
+                await logout(context);
               },
               icon: const Icon(Icons.logout),
             ),
@@ -300,12 +296,23 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: _selectedColor, 
+              backgroundColor: _selectedColor,
             ),
           ),
         ),
         const SizedBox(height: 16.0),
       ],
+    );
+  }
+
+  Future<void> logout(context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
     );
   }
 

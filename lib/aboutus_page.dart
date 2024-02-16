@@ -106,7 +106,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 ElevatedButton(
                   onPressed: _pickImage,
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
                     backgroundColor: ColorPalette.buttonBackground,
                     foregroundColor: ColorPalette.buttonText,
                     shape: RoundedRectangleBorder(
@@ -134,8 +135,11 @@ class _AboutUsPageState extends State<AboutUsPage> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('Data Inserted Suceesfully')));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Data Inserted Suceesfully'),
+                        ),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -210,36 +214,40 @@ class _AboutUsPageState extends State<AboutUsPage> {
                                   Text(field['name']),
                                   if (field['enabled'] == true)
                                     const SizedBox(width: 20),
-                                  SizedBox(
-                                    width: 100,
-                                    child: TextFormField(
-                                      decoration: InputDecoration(
-                                        //hintText:
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
+                                  if (field['enabled'] == true)
+                                    SizedBox(
+                                      width: 100,
+                                      child: TextFormField(
+                                        controller: _controllers[
+                                            _highlightFields.indexOf(field)],
+                                        decoration: InputDecoration(
+                                          //hintText:
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                            vertical: 8,
+                                            horizontal: 12,
+                                          ),
                                         ),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                          vertical: 8,
-                                          horizontal: 12,
-                                        ),
+                                        keyboardType: TextInputType.number,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter a rating';
+                                          }
+                                          final int? rating =
+                                              int.tryParse(value);
+                                          if (rating == null ||
+                                              rating < 0 ||
+                                              rating > 5) {
+                                            return 'Please enter a valid rating between 0 and 5';
+                                          }
+                                          return null;
+                                        },
                                       ),
-                                      keyboardType: TextInputType.number,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter a rating';
-                                        }
-                                        final int? rating = int.tryParse(value);
-                                        if (rating == null ||
-                                            rating < 0 ||
-                                            rating > 5) {
-                                          return 'Please enter a valid rating between 0 and 5';
-                                        }
-                                        return null;
-                                      },
                                     ),
-                                  ),
                                   const SizedBox(width: 8),
                                 ],
                               );

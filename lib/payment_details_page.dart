@@ -39,7 +39,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -52,7 +52,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                 _ifscCodeController, 'IFSC Code', _bankDetailsError),
             _buildTextField(
                 _accountTypeController, 'Account Type', _bankDetailsError),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 16),
             _customButton('Save Bank Payment Details', _saveBankDetails,
                 ColorPalette.buttonText, ColorPalette.buttonBackground),
             const SizedBox(

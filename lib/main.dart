@@ -4,12 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:business_card/navigation_page.dart';
 import 'package:business_card/login_page.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-
-  runApp(MyApp(isLoggedIn: isLoggedIn));
+void main() {
+  runApp(MyApp());
 }
 
 final theme = ThemeData(
@@ -21,9 +17,7 @@ final theme = ThemeData(
 );
 
 class MyApp extends StatelessWidget {
-  final bool isLoggedIn;
-
-  const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,17 +25,31 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Business Card',
         theme: theme,
-        home: isLoggedIn ? const NavigationPage() : const AuthenticationWrapper(),
+        home: const AuthenticationWrapper(),
       ),
     );
   }
 }
 
-class AuthenticationWrapper extends ConsumerWidget {
-  const AuthenticationWrapper({Key? key}) : super(key: key);
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return const LoginPage();
+  Widget build(BuildContext context) {
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        }
+        if (snapshot.hasError || !snapshot.hasData) {
+          // Handle initialization errors or no data
+          return const Text('Error initializing SharedPreferences');
+        }
+        final prefs = snapshot.data!;
+        final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+        return isLoggedIn ? const NavigationPage() : const LoginPage();
+      },
+    );
   }
 }
