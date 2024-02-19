@@ -248,7 +248,6 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: ColorPalette.buttonText,
               ),
             ),
           ),
@@ -292,7 +291,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: ColorPalette.buttonText,
+                color: Colors.white,
               ),
             ),
             style: ElevatedButton.styleFrom(
