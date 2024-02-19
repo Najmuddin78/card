@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:business_card/color_palette.dart';
 import 'package:business_card/navigation_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,9 +19,9 @@ class _LoginPageState extends State<LoginPage> {
   String _password = '';
   bool _isLoading = false;
 
-  Future<void> _trySubmit() async {
+  void _trySubmit(BuildContext context, Function(String) showSnackBar,
+      Function() navigateToForgotPassword) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-   await  prefs.setBool('isLoggedIn', true);
 
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
@@ -30,22 +31,46 @@ class _LoginPageState extends State<LoginPage> {
         _isLoading = true;
       });
 
-      print('Email: $_email, Password: $_password');
+      final url = Uri.parse(
+        'https://digitalbusinesscard.webwhizinfosys.com/api/company/login',
+      );
 
-      Future.delayed(
-        const Duration(seconds: 1),
-        () {
+      try {
+        final response = await http.post(
+          url,
+          body: {
+            'email': _email,
+            'password': _password,
+          },
+        );
+        print('Response status code: ${response.statusCode}');
+
+        final responseData = json.decode(response.body);
+        print('Response data: $responseData');
+
+        if ((response.statusCode == 200 || response.statusCode == 201) &&
+            responseData['status'] == 'success') {
+          await prefs.setBool('isLoggedIn', true);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => const NavigationPage(),
             ),
           );
-        },
-      ).then((_) {
-        setState(() {
-          _isLoading = false;
-        });
+        } else {
+          final errorMessage =
+              (response.statusCode == 200 || response.statusCode == 201)
+                  ? 'Login failed. Please try again.'
+                  : responseData['message'] ??
+                      'An error occurred. Please try again later.';
+          showSnackBar(errorMessage);
+        }
+      } catch (error) {
+        showSnackBar('An error occurred. Please try again later.');
+      }
+
+      setState(() {
+        _isLoading = false;
       });
     }
   }
@@ -94,20 +119,20 @@ class _LoginPageState extends State<LoginPage> {
                             height: 120,
                           ),
                           const SizedBox(width: 16),
-                          Column(
+                          const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'Welcome Back!',
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(height: 8),
                               Text(
                                 'Log In to your account',
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -149,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                           if (value == null ||
                               value.isEmpty ||
                               value.trim().length < 4) {
-                            return 'Please enter a a password';
+                            return 'Please enter a password';
                           }
                           return null;
                         },
@@ -159,7 +184,10 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: _isLoading ? null : _trySubmit,
+                        onPressed: _isLoading
+                            ? null
+                            : () => _trySubmit(
+                                context, _showSnackBar, _forgotPassword),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16.0, vertical: 8.0),
@@ -199,6 +227,16 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
       ),
     );
   }

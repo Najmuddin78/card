@@ -73,6 +73,13 @@ class _HomePageState extends State<HomePage> {
             foregroundColor: ColorPalette.buttonText,
           ),
         ),
+        textTheme: TextTheme(
+          button: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: ColorPalette.buttonText,
+          ),
+        ),
       ),
       home: Scaffold(
         appBar: AppBar(
@@ -214,14 +221,7 @@ class _HomePageState extends State<HomePage> {
       child: ElevatedButton.icon(
         onPressed: onPressed,
         icon: Icon(icon),
-        label: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: ColorPalette.buttonText,
-          ),
-        ),
+        label: Text(text),
       ),
     );
   }
@@ -245,10 +245,6 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.image),
             label: const Text(
               'Choose Company Logo',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
             ),
           ),
         ),
@@ -287,12 +283,10 @@ class _HomePageState extends State<HomePage> {
             },
             icon: const Icon(Icons.color_lens),
             label: const Text(
-              'Please select any color of Your Theme',
-              style: TextStyle(
+              'Please select color of your theme',
+              style: (TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+              )),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: _selectedColor,
