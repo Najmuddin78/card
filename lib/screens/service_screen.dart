@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:card/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -72,24 +71,16 @@ class _ServiceScreenState extends State<ServiceScreen> {
                     alignment: Alignment.centerLeft,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (_, __, ___) =>
-                                ServiceDialog(onServiceAdded: addService),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              var begin = const Offset(0.0, 1.0);
-                              var end = Offset.zero;
-                              var curve = Curves.ease;
-
-                              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-                              return SlideTransition(
-                                position: animation.drive(tween),
-                                child: child,
-                              );
-                            },
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (_) =>
+                              ServiceDialog(onServiceAdded: addService),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
                           ),
+                          isScrollControlled: true,
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -99,7 +90,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         elevation: 0,
-                        backgroundColor: lightColorScheme.primary,
+                        backgroundColor: Colors.blue,
                         foregroundColor: Colors.white,
                       ),
                       child: const Text(
@@ -201,7 +192,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   elevation: 0,
-                                  backgroundColor: lightColorScheme.primary,
+                                  backgroundColor: Colors.blue,
                                   foregroundColor: Colors.white,
                                 ),
                                 child: const Text(
@@ -305,127 +296,123 @@ class _ServiceDialogState extends State<ServiceDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _image == null
+                  ? const Column(
+                      children: [
+                        SizedBox(height: 20),
+                        Text('No image selected.'),
+                        SizedBox(height: 8),
+                      ],
+                    )
+                  : Flexible(
+                      child: Image.file(
+                        _image!,
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: getImage,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Select Image'),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _serviceNameController,
+                decoration: InputDecoration(
+                  hintText: 'Enter Service Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 20,
+                  ),
+                ),
+                style: const TextStyle(fontSize: 16),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter service name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _serviceDescriptionController,
+                decoration: InputDecoration(
+                  hintText: 'Enter Service Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 20,
+                  ),
+                ),
+                style: const TextStyle(fontSize: 16),
+                maxLines: 3,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter service description';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _image == null
-                      ? const Column(
-                          children: [
-                            SizedBox(height: 20),
-                            Text('No image selected.'),
-                            SizedBox(height: 8),
-                          ],
-                        )
-                      : Flexible(
-                          child: Image.file(
-                            _image!,
-                            width: 200,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                  const SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: getImage,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 8.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      backgroundColor: lightColorScheme.primary,
-                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red,
                     ),
-                    child: const Text('Select Image'),
+                    child: const Text('Cancel'),
                   ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _serviceNameController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Service Name',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                  ElevatedButton(
+                    onPressed: _submitForm,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 14,
-                        horizontal: 20,
-                      ),
+                      backgroundColor: Colors.blue,
                     ),
-                    style: const TextStyle(fontSize: 16),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter service name';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _serviceDescriptionController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Service Description',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 14,
-                        horizontal: 20,
-                      ),
-                    ),
-                    style: const TextStyle(fontSize: 16),
-                    maxLines: 3,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter service description';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 8.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          backgroundColor: Colors.red,
-                        ),
-                        child: const Text('Cancel'),
-                      ),
-                      ElevatedButton(
-                        onPressed: _submitForm,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 8.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          backgroundColor: lightColorScheme.primary,
-                        ),
-                        child: const Text('Add Service'),
-                      ),
-                    ],
+                    child: const Text('Add Service'),
                   ),
                 ],
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -530,7 +517,7 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        backgroundColor: lightColorScheme.primary,
+                        backgroundColor: Colors.blue,
                         foregroundColor: Colors.white,
                       ),
                       child: const Text('Change Image'),
@@ -595,7 +582,7 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      backgroundColor: lightColorScheme.primary,
+                      backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
                     ),
                     child: const Text(
