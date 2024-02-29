@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:card/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -90,7 +91,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         elevation: 0,
-                        backgroundColor: Colors.blue,
+                        backgroundColor: lightColorScheme.primary,
                         foregroundColor: Colors.white,
                       ),
                       child: const Text(
@@ -197,7 +198,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   elevation: 0,
-                                  backgroundColor: Colors.blue,
+                                  backgroundColor: lightColorScheme.primary,
                                   foregroundColor: Colors.white,
                                 ),
                                 child: const Text(
@@ -337,7 +338,7 @@ class _ServiceDialogState extends State<ServiceDialog> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: lightColorScheme.primary,
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Select Image'),
@@ -411,7 +412,7 @@ class _ServiceDialogState extends State<ServiceDialog> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      backgroundColor: Colors.blue,
+                      backgroundColor: lightColorScheme.primary,
                     ),
                     child: const Text('Add Service'),
                   ),
@@ -525,7 +526,7 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        backgroundColor: Colors.blue,
+                        backgroundColor: lightColorScheme.primary,
                         foregroundColor: Colors.white,
                       ),
                       child: const Text('Change Image'),
@@ -590,7 +591,7 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      backgroundColor: Colors.blue,
+                      backgroundColor: lightColorScheme.primary,
                       foregroundColor: Colors.white,
                     ),
                     child: const Text(

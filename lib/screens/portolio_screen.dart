@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:card/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -90,7 +91,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         elevation: 0,
-                        backgroundColor: Colors.blue,
+                        backgroundColor: lightColorScheme.primary,
                         foregroundColor: Colors.white,
                       ),
                       child: const Text(
@@ -197,7 +198,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   elevation: 0,
-                                  backgroundColor: Colors.blue,
+                                  backgroundColor: lightColorScheme.primary,
                                   foregroundColor: Colors.white,
                                 ),
                                 child: const Text(
@@ -337,7 +338,7 @@ class _PortfolioDialogState extends State<PortfolioDialog> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: lightColorScheme.primary,
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Select Image'),
@@ -410,7 +411,7 @@ class _PortfolioDialogState extends State<PortfolioDialog> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      backgroundColor: Colors.blue,
+                      backgroundColor: lightColorScheme.primary,
                     ),
                     child: const Text('Add Portfolio'),
                   ),
@@ -524,7 +525,7 @@ class _EditPortfolioDialogState extends State<EditPortfolioDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        backgroundColor: Colors.blue,
+                        backgroundColor: lightColorScheme.primary,
                         foregroundColor: Colors.white,
                       ),
                       child: const Text('Change Image'),
@@ -587,7 +588,7 @@ class _EditPortfolioDialogState extends State<EditPortfolioDialog> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      backgroundColor: Colors.blue,
+                      backgroundColor: lightColorScheme.primary,
                       foregroundColor: Colors.white,
                     ),
                     child: const Text(
