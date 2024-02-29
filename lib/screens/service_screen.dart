@@ -75,7 +75,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                           context: context,
                           builder: (_) =>
                               ServiceDialog(onServiceAdded: addService),
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.vertical(
                               top: Radius.circular(20),
                             ),
@@ -173,16 +173,21 @@ class _ServiceScreenState extends State<ServiceScreen> {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => EditServiceDialog(
-                                        service: service,
-                                        onServiceEdited: (editedService) {
-                                          editService(index, editedService);
-                                        },
-                                        onDelete: () => deleteService(index),
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (_) => EditServiceDialog(
+                                      service: service,
+                                      onServiceEdited: (editedService) {
+                                        editService(index, editedService);
+                                      },
+                                      onDelete: () => deleteService(index),
+                                    ),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20),
                                       ),
                                     ),
+                                    isScrollControlled: true,
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -491,10 +496,13 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20.0),
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -587,26 +595,6 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
                     ),
                     child: const Text(
                       'Save',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      widget.onDelete();
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 5.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        backgroundColor: Colors.red),
-                    child: const Text(
-                      'Delete',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
