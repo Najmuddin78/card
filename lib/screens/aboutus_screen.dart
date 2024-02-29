@@ -47,6 +47,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
       review: '',
       status: 'INACTIVE',
     ),
+    
   ];
 
   final _formKey = GlobalKey<FormState>();
@@ -451,30 +452,33 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                     ),
                     const Divider(color: Colors.grey),
                     const SizedBox(height: 20),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: testimonials.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            toggleTestimonialStatus(index);
-                          },
-                          child: Card(
-                            margin: const EdgeInsets.all(8),
-                            elevation: 4,
-                            child: ListTile(
-                              title: Text(testimonials[index].name),
-                              subtitle: Text(testimonials[index].review),
-                              trailing: Text(testimonials[index].status),
-                            ),
-                          ),
-                        );
-                      },
+                    SingleChildScrollView(
+                      child: Column(
+                        children: testimonials
+                            .map(
+                              (testimonial) => GestureDetector(
+                                onTap: () {
+                                  toggleTestimonialStatus(testimonial);
+                                },
+                                child: Card(
+                                  margin: const EdgeInsets.all(8),
+                                  elevation: 4,
+                                  child: ListTile(
+                                    title: Text(testimonial.name),
+                                    subtitle: Text(testimonial.review),
+                                    trailing: Text(testimonial.status),
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
                     ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
+              const SizedBox(height: 50),
             ],
           ),
         ),
@@ -482,8 +486,11 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
     );
   }
 
-  TextFormField buildTextFormField(String label, void Function(String?) onSaved,
-      String? Function(String?)? validator) {
+  TextFormField buildTextFormField(
+      String label,
+      void Function(String?) onSaved,
+      String? Function(String?)? validator,
+      ) {
     return TextFormField(
       style: const TextStyle(fontSize: 16),
       decoration: InputDecoration(
@@ -501,8 +508,11 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
     );
   }
 
-  TextFormField buildTextAreaFormField(String label,
-      void Function(String?) onSaved, String? Function(String?)? validator) {
+  TextFormField buildTextAreaFormField(
+      String label,
+      void Function(String?) onSaved,
+      String? Function(String?)? validator,
+      ) {
     return TextFormField(
       style: const TextStyle(fontSize: 16),
       maxLines: 5,
@@ -520,7 +530,8 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? image =
+    await _picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       setState(() {
@@ -529,10 +540,10 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
     }
   }
 
-  void toggleTestimonialStatus(int index) {
+  void toggleTestimonialStatus(Testimonial testimonial) {
     setState(() {
-      testimonials[index].status =
-          testimonials[index].status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+      testimonial.status =
+      testimonial.status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
     });
   }
 }

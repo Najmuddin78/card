@@ -248,7 +248,8 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               text: 'Save Social Media',
             ),
-            const SizedBox(height: 30)
+            const SizedBox(height: 30),
+            const SizedBox(height: 40), 
           ],
         ),
       ),

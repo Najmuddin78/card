@@ -197,10 +197,12 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                           ),
                         ),
                 ),
+                const SizedBox(height: 30),
               ],
             ),
           ),
         ),
+        const SizedBox(height: 40),
       ],
     );
   }
@@ -228,7 +230,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
           borderRadius: BorderRadius.circular(10.0),
         ),
         errorText: errorText,
-        contentPadding: EdgeInsets.all(20.0), // Applying the same padding
+        contentPadding: const EdgeInsets.all(20.0), 
       ),
     );
   }

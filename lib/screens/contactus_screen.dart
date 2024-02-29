@@ -241,113 +241,119 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                 ),
               ),
               const SizedBox(height: 40),
-              Container(
-                padding: const EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
+              SingleChildScrollView( // Added SingleChildScrollView here
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 1,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                    border: Border.all(
                       color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 1,
-                      blurRadius: 1,
-                      offset: const Offset(0, 2),
+                      width: 1.0,
                     ),
-                  ],
-                  border: Border.all(
-                    color: Colors.grey.withOpacity(0.5),
-                    width: 1.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          'All Contact Table:',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const Divider(color: Colors.grey),
+                      const SizedBox(height: 20),
+                      Container(
+                        constraints:
+                            const BoxConstraints(maxWidth: double.infinity),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            columns: const [
+                              DataColumn(label: Text('Name')),
+                              DataColumn(label: Text('Email')),
+                              DataColumn(label: Text('Contact Number')),
+                              DataColumn(label: Text('Message')),
+                              DataColumn(label: Text('Status')),
+                            ],
+                            rows: [
+                              DataRow(
+                                cells: [
+                                  const DataCell(Text('John Doe')),
+                                  const DataCell(Text('john@example.com')),
+                                  const DataCell(Text('+918575947542')),
+                                  const DataCell(
+                                      Text('Hello, I have a question.')),
+                                  DataCell(
+                                    GestureDetector(
+                                      onTap: () {
+                                        toggleStatus('John Doe');
+                                      },
+                                      child: Text(
+                                        contactStatus['John Doe']!,
+                                        style: TextStyle(
+                                          color: contactStatus['John Doe'] ==
+                                                  'Pending'
+                                              ? Colors.red
+                                              : Colors.green,
+                                          decoration:
+                                              TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              DataRow(
+                                cells: [
+                                  const DataCell(Text('Jane Smith')),
+                                  const DataCell(Text('jane@example.com')),
+                                  const DataCell(Text('+913257957542')),
+                                  const DataCell(Text('This is urgent.')),
+                                  DataCell(
+                                    GestureDetector(
+                                      onTap: () {
+                                        toggleStatus('Jane Smith');
+                                      },
+                                      child: Text(
+                                        contactStatus['Jane Smith']!,
+                                        style: TextStyle(
+                                          color: contactStatus['Jane Smith'] ==
+                                                  'Pending'
+                                              ? Colors.red
+                                              : Colors.green,
+                                          decoration:
+                                              TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20)
+                    ],
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: Text(
-                        'All Contact Table:',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const Divider(color: Colors.grey),
-                    const SizedBox(height: 20),
-                    Container(
-                      constraints:
-                          const BoxConstraints(maxWidth: double.infinity),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          columns: const [
-                            DataColumn(label: Text('Name')),
-                            DataColumn(label: Text('Email')),
-                            DataColumn(label: Text('Contact Number')),
-                            DataColumn(label: Text('Message')),
-                            DataColumn(label: Text('Status')),
-                          ],
-                          rows: [
-                            DataRow(
-                              cells: [
-                                const DataCell(Text('John Doe')),
-                                const DataCell(Text('john@example.com')),
-                                const DataCell(Text('+918575947542')),
-                                const DataCell(
-                                    Text('Hello, I have a question.')),
-                                DataCell(
-                                  GestureDetector(
-                                    onTap: () {
-                                      toggleStatus('John Doe');
-                                    },
-                                    child: Text(
-                                      contactStatus['John Doe']!,
-                                      style: TextStyle(
-                                        color: contactStatus['John Doe'] ==
-                                                'Pending'
-                                            ? Colors.red
-                                            : Colors.green,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            DataRow(
-                              cells: [
-                                const DataCell(Text('Jane Smith')),
-                                const DataCell(Text('jane@example.com')),
-                                const DataCell(Text('+913257957542')),
-                                const DataCell(Text('This is urgent.')),
-                                DataCell(
-                                  GestureDetector(
-                                    onTap: () {
-                                      toggleStatus('Jane Smith');
-                                    },
-                                    child: Text(
-                                      contactStatus['Jane Smith']!,
-                                      style: TextStyle(
-                                        color: contactStatus['Jane Smith'] ==
-                                                'Pending'
-                                            ? Colors.red
-                                            : Colors.green,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20)
-                  ],
-                ),
               ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
