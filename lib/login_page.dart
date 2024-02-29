@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   String _password = '';
   bool _isLoading = false;
 
-  void _trySubmit(BuildContext context, Function(String) showSnackBar,
+  void _trySubmit(context, Function(String) showSnackBar,
       Function() navigateToForgotPassword) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -51,6 +51,10 @@ class _LoginPageState extends State<LoginPage> {
         if ((response.statusCode == 200 || response.statusCode == 201) &&
             responseData['status'] == 'success') {
           await prefs.setBool('isLoggedIn', true);
+          await prefs.setString('jwtToken', responseData.jwtToken);
+
+          await prefs.setString('user', json.encode(responseData.user));
+          await prefs.setString('id', json.encode(responseData.id));
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(

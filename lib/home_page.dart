@@ -1,8 +1,9 @@
+
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:business_card/color_palette.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login_page.dart';
 
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   TextEditingController facebookController = TextEditingController();
 
   String _companyCategory = '';
-  Color _selectedColor = ColorPalette.buttonBackground;
+  Color _selectedColor = Colors.blue;
   XFile? _image;
 
   String? _companyNameError;
@@ -57,6 +58,9 @@ class _HomePageState extends State<HomePage> {
     'Other',
   ];
 
+   
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -69,23 +73,23 @@ class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.circular(10.0),
             ),
             elevation: 0,
-            backgroundColor: ColorPalette.buttonBackground,
-            foregroundColor: ColorPalette.buttonText,
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
           ),
         ),
-        textTheme: TextTheme(
-          button: TextStyle(
+        textTheme: const TextTheme(
+          labelLarge: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: ColorPalette.buttonText,
+            color: Colors.black,
           ),
         ),
       ),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Home'),
-          backgroundColor: ColorPalette.appBarBackground,
-          foregroundColor: ColorPalette.appBarText,
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
           leading: Image.asset(
             'assets/images/logo.png',
             width: 120,
@@ -94,7 +98,7 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
               onPressed: () async {
-                await logout(context);
+                await _logout(context);
               },
               icon: const Icon(Icons.logout),
             ),
@@ -201,10 +205,9 @@ class _HomePageState extends State<HomePage> {
           ),
           style: const TextStyle(
             fontSize: 16,
-            color: ColorPalette.text,
           ),
           validator: validator,
-          onSaved: onSaved,
+          onSaved: onSaved as void Function(String?)?,
         ),
         const SizedBox(height: 16.0),
       ],
@@ -278,15 +281,10 @@ class _HomePageState extends State<HomePage> {
         SizedBox(
           height: 45.0,
           child: ElevatedButton.icon(
-            onPressed: () {
-              _showColorPickerDialog(context);
-            },
+            onPressed: () {},
             icon: const Icon(Icons.color_lens),
             label: const Text(
               'Please select color of your theme',
-              style: (TextStyle(
-                fontSize: 16,
-              )),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: _selectedColor,
@@ -296,53 +294,6 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(height: 16.0),
       ],
     );
-  }
-
-  Future<void> logout(context) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', false);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const LoginPage(),
-      ),
-    );
-  }
-
-  Future<void> _showColorPickerDialog(BuildContext context) async {
-    Color? newColor = _selectedColor;
-    newColor = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Pick a color'),
-          content: SingleChildScrollView(
-            child: ColorPicker(
-              pickerColor: _selectedColor,
-              onColorChanged: (Color color) {
-                newColor = color;
-              },
-              showLabel: true,
-              pickerAreaHeightPercent: 0.8,
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(newColor);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (newColor != null) {
-      setState(() {
-        _selectedColor = newColor!;
-      });
-    }
   }
 
   Widget _buildCategoryDropdown() {
@@ -370,7 +321,6 @@ class _HomePageState extends State<HomePage> {
                 category,
                 style: const TextStyle(
                   fontSize: 16,
-                  color: ColorPalette.text,
                 ),
               ),
             );
@@ -478,7 +428,6 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    // Proceed with saving changes or any other action
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Changes saved successfully!'),
@@ -486,7 +435,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    // Clear text fields after saving
     companyNameController.clear();
     // Clear other text fields if needed
   }
@@ -527,8 +475,6 @@ class _HomePageState extends State<HomePage> {
         _twitterError == null &&
         _instagramError == null &&
         _facebookError == null) {
-      // All fields are valid, proceed with saving data or other operations
-      // Save changes to database or perform any other action
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Social media links saved successfully!'),
@@ -542,6 +488,17 @@ class _HomePageState extends State<HomePage> {
       instagramController.clear();
       facebookController.clear();
     }
+  }
+
+  Future<void> _logout(context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
   }
 
   @override

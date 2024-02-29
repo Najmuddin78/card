@@ -1,17 +1,19 @@
 import 'dart:io';
+import 'package:business_card/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'color_palette.dart';
 
 class ServicePage extends StatefulWidget {
   const ServicePage({Key? key}) : super(key: key);
 
   @override
-  _ServicePageState createState() => _ServicePageState();
+  State<StatefulWidget> createState() {
+    return _ServicePageState();
+  }
 }
 
 class _ServicePageState extends State<ServicePage> {
-  List<Service> services = []; // List to store services
+  List<Service> services = [];
 
   void addService(Service service) {
     setState(() {
@@ -31,94 +33,82 @@ class _ServicePageState extends State<ServicePage> {
     });
   }
 
+  void editService(int index, Service editedService) {
+    setState(() {
+      services[index] = editedService;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('All Services'),
-        backgroundColor: ColorPalette.appBarBackground,
-        foregroundColor: ColorPalette.appBarText,
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         leading: Image.asset(
           'assets/images/logo.png',
-          width: 120,
-          height: 120,
+          width: 40,
+          height: 40,
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Service List',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Service List',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8.0),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      showGeneralDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        barrierLabel: MaterialLocalizations.of(context)
-                            .modalBarrierDismissLabel,
-                        barrierColor: Colors.black.withOpacity(0.5),
-                        transitionDuration: const Duration(milliseconds: 200),
-                        pageBuilder: (BuildContext buildContext,
-                            Animation<double> animation,
-                            Animation<double> secondaryAnimation) {
-                          return Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Dialog(
-                              insetPadding: EdgeInsets.zero,
-                              child: SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: Offset(0.0, 1.0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: ServiceDialog(
-                                  onServiceAdded: addService,
-                                ),
-                              ),
+                  const SizedBox(height: 8.0),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (_) =>
+                              ServiceDialog(onServiceAdded: addService),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
                             ),
-                          );
-                        },
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 8.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          isScrollControlled: true,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        elevation: 0,
+                        backgroundColor: lightColorScheme.primary,
+                        foregroundColor: Colors.white,
                       ),
-                      elevation: 0,
-                      backgroundColor: ColorPalette.buttonBackground,
-                      foregroundColor: ColorPalette.buttonText,
-                    ),
-                    child: const Text(
-                      'Add Service',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        'Add Service',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Divider(
-                  color: Colors.black,
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  const Divider(color: Colors.grey),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
                 columns: const [
@@ -139,17 +129,35 @@ class _ServicePageState extends State<ServicePage> {
                           height: 100,
                           child: Image.file(
                             File(service.imagePath),
+                            width: 100,
+                            height: 100,
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                      DataCell(Text(service.serviceName)),
-                      DataCell(Text(service.serviceDescription)),
                       DataCell(
-                        TextButton(
+                        Text(service.serviceName),
+                      ),
+                      DataCell(
+                        Text(service.serviceDescription),
+                      ),
+                      DataCell(
+                        OutlinedButton(
                           onPressed: () {
                             toggleStatus(index);
                           },
+                          style: ButtonStyle(
+                            side: MaterialStateProperty.resolveWith<BorderSide>(
+                              (states) {
+                                return BorderSide(
+                                  color: service.isActive
+                                      ? Colors.green
+                                      : Colors.red,
+                                  width: 2.0,
+                                );
+                              },
+                            ),
+                          ),
                           child: Text(
                             service.isActive ? 'Active' : 'Inactive',
                             style: TextStyle(
@@ -166,17 +174,32 @@ class _ServicePageState extends State<ServicePage> {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  showDialog(
+                                  showModalBottomSheet(
                                     context: context,
-                                    builder: (context) => EditServiceDialog(
+                                    builder: (_) => EditServiceDialog(
                                       service: service,
+                                      onServiceEdited: (editedService) {
+                                        editService(index, editedService);
+                                      },
                                       onDelete: () => deleteService(index),
                                     ),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20),
+                                      ),
+                                    ),
+                                    isScrollControlled: true,
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  foregroundColor: ColorPalette.buttonText,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 5.0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  elevation: 0,
+                                  backgroundColor: lightColorScheme.primary,
+                                  foregroundColor: Colors.white,
                                 ),
                                 child: const Text(
                                   'Edit',
@@ -192,9 +215,12 @@ class _ServicePageState extends State<ServicePage> {
                                   deleteService(index);
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: ColorPalette.buttonText,
-                                ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 5.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    backgroundColor: Colors.red),
                                 child: const Text(
                                   'Delete',
                                   style: TextStyle(
@@ -212,8 +238,8 @@ class _ServicePageState extends State<ServicePage> {
                 }).toList(),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -221,6 +247,7 @@ class _ServicePageState extends State<ServicePage> {
 
 class ServiceDialog extends StatefulWidget {
   final Function(Service) onServiceAdded;
+
   const ServiceDialog({Key? key, required this.onServiceAdded})
       : super(key: key);
 
@@ -232,9 +259,22 @@ class _ServiceDialogState extends State<ServiceDialog> {
   File? _image;
   final picker = ImagePicker();
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _serviceNameController = TextEditingController();
-  final TextEditingController _serviceDescriptionController =
-      TextEditingController();
+  late TextEditingController _serviceNameController;
+  late TextEditingController _serviceDescriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _serviceNameController = TextEditingController();
+    _serviceDescriptionController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _serviceNameController.dispose();
+    _serviceDescriptionController.dispose();
+    super.dispose();
+  }
 
   Future getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -242,119 +282,143 @@ class _ServiceDialogState extends State<ServiceDialog> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
       }
     });
   }
 
-  ElevatedButton buildElevatedButton({
-    required String text,
-    required Function onPressed,
-    Color? backgroundColor,
-    Color? textColor,
-  }) {
-    return ElevatedButton(
-      onPressed: () => onPressed(),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor ?? ColorPalette.buttonBackground,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-         elevation: 0,
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: textColor ?? Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      String serviceName = _serviceNameController.text;
+      String serviceDescription = _serviceDescriptionController.text;
+      Service service = Service(
+        serviceName: serviceName,
+        serviceDescription: serviceDescription,
+        imagePath: _image!.path,
+      );
+      widget.onServiceAdded(service);
+      Navigator.of(context).pop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: double.infinity,
-      child: AlertDialog(
-        title: const Text('Add Service'),
-        content: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _image == null
-                    ? const Text('No image selected.')
-                    : Image.file(_image!),
-                ElevatedButton(
-                  onPressed: getImage,
-                  child: const Text('Select Image'),
-                ),
-                TextFormField(
-                  controller: _serviceNameController,
-                  decoration:
-                      const InputDecoration(labelText: 'Enter Service Name'),
-                  style: const TextStyle(fontSize: 16),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter service name';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _serviceDescriptionController,
-                  decoration: const InputDecoration(
-                      labelText: 'Enter Service Description'),
-                  style: const TextStyle(fontSize: 16),
-                  maxLines: 3,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter service description';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    buildElevatedButton(
-                      text: 'Cancel',
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      backgroundColor: Colors.red, // Change cancel button color
-                      textColor:
-                          Colors.white, // Change cancel button text color
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _image == null
+                  ? const Column(
+                      children: [
+                        SizedBox(height: 20),
+                        Text('No image selected.'),
+                        SizedBox(height: 8),
+                      ],
+                    )
+                  : Flexible(
+                      child: Image.file(
+                        _image!,
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    buildElevatedButton(
-                      text: 'Add Service',
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          String serviceName = _serviceNameController.text;
-                          String serviceDescription =
-                              _serviceDescriptionController.text;
-                          Service service = Service(
-                            serviceName: serviceName,
-                            serviceDescription: serviceDescription,
-                            imagePath: _image!.path,
-                          );
-                          widget.onServiceAdded(service);
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      backgroundColor: Colors.green,
-                    ),
-                  ],
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: getImage,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: lightColorScheme.primary,
+                  foregroundColor: Colors.white,
                 ),
-              ],
-            ),
+                child: const Text('Select Image'),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _serviceNameController,
+                decoration: InputDecoration(
+                  hintText: 'Enter Service Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 20,
+                  ),
+                ),
+                style: const TextStyle(fontSize: 16),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter service name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _serviceDescriptionController,
+                decoration: InputDecoration(
+                  hintText: 'Enter Service Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 20,
+                  ),
+                ),
+                style: const TextStyle(fontSize: 16),
+                maxLines: 3,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter service description';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _submitForm,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      backgroundColor: lightColorScheme.primary,
+                    ),
+                    child: const Text('Add Service'),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -364,11 +428,13 @@ class _ServiceDialogState extends State<ServiceDialog> {
 
 class EditServiceDialog extends StatefulWidget {
   final Service service;
+  final Function(Service) onServiceEdited;
   final Function onDelete;
 
   const EditServiceDialog({
     Key? key,
     required this.service,
+    required this.onServiceEdited,
     required this.onDelete,
   }) : super(key: key);
 
@@ -381,6 +447,26 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
   final picker = ImagePicker();
   late TextEditingController _serviceNameController;
   late TextEditingController _serviceDescriptionController;
+
+  TextFormField buildTextFormField(String label, void Function(String?) onSaved,
+      String? Function(String?)? validator) {
+    return TextFormField(
+      style: const TextStyle(fontSize: 16),
+      controller: _serviceNameController,
+      decoration: InputDecoration(
+        hintText: 'Enter $label',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 14,
+          horizontal: 20,
+        ),
+      ),
+      validator: validator,
+      onSaved: onSaved,
+    );
+  }
 
   @override
   void initState() {
@@ -405,134 +491,131 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
       }
     });
   }
 
-  ElevatedButton buildElevatedButton({
-    required String text,
-    required Function onPressed,
-    Color? backgroundColor,
-    Color? textColor,
-  }) {
-    return ElevatedButton(
-      onPressed: () => onPressed(),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor ?? ColorPalette.buttonBackground,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: textColor ?? Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Edit Service'),
-      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.file(
-              _image!,
-              width: 200,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: getImage,
-              child: const Text('Change Image'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _serviceNameController,
-              decoration: const InputDecoration(labelText: 'Service Name'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter service name';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _serviceDescriptionController,
-              decoration:
-                  const InputDecoration(labelText: 'Service Description'),
-              maxLines: 3,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter service description';
-                }
-                return null;
-              },
-            ),
-          ],
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Image.file(
+                      _image!,
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: getImage,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: lightColorScheme.primary,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Change Image'),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              buildTextFormField(
+                'Service Name',
+                (value) => _serviceNameController.text = value!,
+                (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter service name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _serviceDescriptionController,
+                decoration: InputDecoration(
+                  hintText: 'Enter Service Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 20,
+                  ),
+                ),
+                style: const TextStyle(fontSize: 16),
+                maxLines: 3,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter service description';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_serviceNameController.text.isNotEmpty &&
+                          _serviceDescriptionController.text.isNotEmpty) {
+                        Service editedService = Service(
+                          serviceName: _serviceNameController.text,
+                          serviceDescription:
+                              _serviceDescriptionController.text,
+                          imagePath: _image!.path,
+                        );
+                        widget.onServiceEdited(editedService);
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 5.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      backgroundColor: lightColorScheme.primary,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text(
+                      'Save',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-      actions: [
-        ElevatedButton(
-          onPressed: () {
-            widget.onDelete();
-            Navigator.of(context).pop();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-          ),
-          child: const Text('Delete'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            if (_serviceNameController.text.isNotEmpty &&
-                _serviceDescriptionController.text.isNotEmpty) {
-              widget.service.serviceName = _serviceNameController.text;
-              widget.service.serviceDescription =
-                  _serviceDescriptionController.text;
-              widget.service.imagePath = _image!.path;
-              Navigator.of(context).pop();
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
-          ),
-          child: const Text('Save'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-          ),
-          child: const Text('Cancel'),
-        ),
-      ],
     );
   }
 }
 
 class Service {
-  String serviceName;
-  String serviceDescription;
-  String imagePath;
+  final String serviceName;
+  final String serviceDescription;
+  final String imagePath;
   bool isActive;
 
   Service({
