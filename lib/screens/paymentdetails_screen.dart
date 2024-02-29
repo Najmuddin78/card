@@ -73,7 +73,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(16), // Same padding for all fields in this container
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -125,7 +125,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16), // Same padding for all fields in this container
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -228,8 +228,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
           borderRadius: BorderRadius.circular(10.0),
         ),
         errorText: errorText,
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+        contentPadding: EdgeInsets.all(20.0), // Applying the same padding
       ),
     );
   }
@@ -239,24 +238,20 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
       width: double.infinity,
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: ElevatedButton(
-            onPressed: onPressed,
-            style: ElevatedButton.styleFrom(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              backgroundColor: lightColorScheme.primary,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+            backgroundColor: lightColorScheme.primary,
+          ),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
