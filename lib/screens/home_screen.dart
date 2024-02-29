@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'dart:io';
 
 import 'package:card/screens/welcome_screen.dart';
@@ -51,6 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
     'Utilities',
     'Other',
   ];
+
+  final String authToken =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2Vid2l6aW5mb3N5c0BnbWFpbC5jb20iLCJpZCI6IjY1Y2RlZTgxMzY2MWZlMTI3MTQ0NGVkYSJ9LCJpYXQiOjE3MDkxODE1NjIsImV4cCI6MTcwOTI2Nzk2Mn0.YYL3CmkPjNiu8E1ytEmI_T2STXWI7gnTq4V-SYpKzkw';
+  // Replace with your actual auth token
+  final String apiUrl =
+      'https://digitalbusinesscard.webwhizinfosys.com/api/company/id';
 
   @override
   Widget build(context) {
@@ -386,8 +393,8 @@ class _HomeScreenState extends State<HomeScreen> {
               onColorChanged: (Color color) {
                 currentColor = color;
               },
-              showLabel: true,
               pickerAreaHeightPercent: 0.8,
+              labelTypes: const [],
             ),
           ),
           actions: <Widget>[
