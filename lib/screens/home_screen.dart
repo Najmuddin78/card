@@ -66,14 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
         foregroundColor: Colors.white,
         actions: [
           IconButton(
-            onPressed: () async {
-              final SharedPreferences prefs =
-                  await SharedPreferences.getInstance();
-              await prefs.setBool('isLoggedIn', false);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-              );
+            onPressed: () {
+              _logout(context);
             },
             icon: const Icon(Icons.logout),
           ),
@@ -149,25 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             _buildButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  if (_image == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please choose a company logo.'),
-                      ),
-                    );
-                    return;
-                  }
-                  if (_selectedColor == Colors.blue) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please select a color for your theme.'),
-                      ),
-                    );
-                    return;
-                  }
-                  _saveChangesFormData(context);
-                }
+                _saveChangesFormData();
               },
               text: 'Save Changes',
             ),
@@ -242,14 +218,12 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16.0),
             _buildButton(
               onPressed: () {
-                if (_socialMediaFormKey.currentState!.validate()) {
-                  _validateAndSaveSocialMediaData(context);
-                }
+                _validateAndSaveSocialMediaData();
               },
               text: 'Save Social Media',
             ),
             const SizedBox(height: 30),
-            const SizedBox(height: 40), 
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -470,31 +444,60 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _saveChangesFormData(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Changes saved successfully!'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+  void _saveChangesFormData() {
+    if (_formKey.currentState!.validate()) {
+      if (_image == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please choose a company logo.'),
+          ),
+        );
+        return;
+      }
+      if (_selectedColor == Colors.blue) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select a color for your theme.'),
+          ),
+        );
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Changes saved successfully!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
 
-    companyNameController.clear();
-    // Clear other text fields if needed
+      companyNameController.clear();
+      // Clear other text fields if needed
+    }
   }
 
-  void _validateAndSaveSocialMediaData(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Social media links saved successfully!'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+  void _validateAndSaveSocialMediaData() {
+    if (_socialMediaFormKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Social media links saved successfully!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
 
-    whatsappController.clear();
-    youtubeController.clear();
-    twitterController.clear();
-    instagramController.clear();
-    facebookController.clear();
+      whatsappController.clear();
+      youtubeController.clear();
+      twitterController.clear();
+      instagramController.clear();
+      facebookController.clear();
+    }
+  }
+
+  void _logout(context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+    );
   }
 
   @override
