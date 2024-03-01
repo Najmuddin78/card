@@ -1,19 +1,21 @@
 import 'dart:async';
-
 import 'dart:io';
 
-import 'package:card/screens/welcome_screen.dart';
-import 'package:card/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:card/screens/welcome_screen.dart';
+import 'package:card/theme/theme.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<StatefulWidget> createState() {
+    return _HomeScreenState();
+  }
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -52,12 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
     'Utilities',
     'Other',
   ];
-
-  final String authToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2Vid2l6aW5mb3N5c0BnbWFpbC5jb20iLCJpZCI6IjY1Y2RlZTgxMzY2MWZlMTI3MTQ0NGVkYSJ9LCJpYXQiOjE3MDkxODE1NjIsImV4cCI6MTcwOTI2Nzk2Mn0.YYL3CmkPjNiu8E1ytEmI_T2STXWI7gnTq4V-SYpKzkw';
-  // Replace with your actual auth token
-  final String apiUrl =
-      'https://digitalbusinesscard.webwhizinfosys.com/api/company/id';
 
   @override
   Widget build(context) {
@@ -317,21 +313,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSelectedImage() {
-    return Container(
-      margin: const EdgeInsets.only(top: 10.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
-        child: InkWell(
-          onTap: _showCompanyLogoImage,
-          child: Image.file(
-            File(_image!.path),
-            height: 250.0,
-            width: 250.0,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-    );
+    return _image != null
+        ? Container(
+            margin: const EdgeInsets.only(top: 10.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.file(
+                File(_image!.path),
+                height: 250.0,
+                width: 250.0,
+                fit: BoxFit.cover,
+              ),
+            ),
+          )
+        : SizedBox.shrink();
   }
 
   void _showCompanyLogoImage() {
@@ -476,8 +471,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
 
-      companyNameController.clear();
-      // Clear other text fields if needed
+      setState(() {
+        _image = null;
+        _selectedColor = lightColorScheme.primary;
+        companyNameController.clear();
+        _companyCategory = '';
+      });
     }
   }
 
