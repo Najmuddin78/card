@@ -252,7 +252,9 @@ class ServiceDialog extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ServiceDialogState createState() => _ServiceDialogState();
+  State<ServiceDialog> createState() {
+    return _ServiceDialogState();
+  }
 }
 
 class _ServiceDialogState extends State<ServiceDialog> {
@@ -439,7 +441,9 @@ class EditServiceDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EditServiceDialogState createState() => _EditServiceDialogState();
+  State<EditServiceDialog> createState() {
+    return _EditServiceDialogState();
+  }
 }
 
 class _EditServiceDialogState extends State<EditServiceDialog> {

@@ -161,8 +161,9 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                           child: Text(
                             portfolio.isActive ? 'Active' : 'Inactive',
                             style: TextStyle(
-                              color:
-                                  portfolio.isActive ? Colors.green : Colors.red,
+                              color: portfolio.isActive
+                                  ? Colors.green
+                                  : Colors.red,
                             ),
                           ),
                         ),
@@ -252,7 +253,9 @@ class PortfolioDialog extends StatefulWidget {
       : super(key: key);
 
   @override
-  _PortfolioDialogState createState() => _PortfolioDialogState();
+  State<PortfolioDialog> createState() {
+    return _PortfolioDialogState();
+  }
 }
 
 class _PortfolioDialogState extends State<PortfolioDialog> {
@@ -438,7 +441,9 @@ class EditPortfolioDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EditPortfolioDialogState createState() => _EditPortfolioDialogState();
+  State<EditPortfolioDialog> createState() {
+    return _EditPortfolioDialogState();
+  }
 }
 
 class _EditPortfolioDialogState extends State<EditPortfolioDialog> {
