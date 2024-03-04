@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:card/screens/welcome_screen.dart';
 import 'package:card/theme/theme.dart';
 
@@ -56,7 +57,66 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
-  Widget build(context) {
+  void initState() {
+    super.initState();
+    loadDataFromApi();
+  }
+
+  void loadDataFromApi() async {
+    try {
+      final String? companyId = await getCompanyId();
+      final String? token = await getToken();
+      // print(' User Token :$token');
+      // print('USer id  :$companyId');
+
+      final url = Uri.parse(
+          'https://digitalbusinesscard.webwhizinfosys.com/api/company/$companyId');
+      final response = await http.get(
+        url,
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+        },
+      );
+
+      print('Respone Status :${response.statusCode}');
+      print('Respone body :${response.body}');
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        setState(() {
+          companyNameController.text = responseData["company"]["name"];
+          _companyCategory = responseData["company"]['categoryName'];
+          _image = XFile(responseData["company"]['logo']);
+          _selectedColor = hexToColor(responseData["company"]["color"]);
+          whatsappController.text = responseData["company"]['whatsappNumber'];
+          facebookController.text = responseData["company"]['facebook'];
+          instagramController.text = responseData["company"]['instagram'];
+          twitterController.text = responseData["company"]['twitter'];
+          youtubeController.text = responseData["company"]['youtube'];
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
+  Future<String?> getCompanyId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(
+      'companyId',
+    );
+  }
+
+  Future<String?> getToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -313,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSelectedImage() {
-    return _image != null
+    return _image != null && File(_image!.path).existsSync()
         ? Container(
             margin: const EdgeInsets.only(top: 10.0),
             child: ClipRRect(
@@ -326,7 +386,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 
   void _showCompanyLogoImage() {
@@ -500,6 +560,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void _logout(context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', false);
+    await prefs.remove('token');
+    await prefs.remove('companyId');
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const WelcomeScreen()),
@@ -515,5 +577,9 @@ class _HomeScreenState extends State<HomeScreen> {
     instagramController.dispose();
     facebookController.dispose();
     super.dispose();
+  }
+
+  Color hexToColor(String code) {
+    return Color(int.parse(code.substring(1), radix: 16) + 0xFF000000);
   }
 }

@@ -32,35 +32,42 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          _pages[_selectedIndex],
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: CurvedNavigationBar(
-              backgroundColor: lightColorScheme.background,
-              buttonBackgroundColor: Colors.black,
-              color: Colors.black,
-              animationDuration: const Duration(milliseconds: 300),
-              items: <Widget>[
-                _buildNavItem(Icons.home, 'Home'),
-                _buildNavItem(Icons.info, 'About'),
-                _buildNavItem(Icons.work, 'Service'),
-                _buildNavItem(Icons.business, 'Portfolio'),
-                _buildNavItem(Icons.payment, 'Payment'),
-                _buildNavItem(Icons.contact_page, 'Contact'),
-              ],
-              onTap: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-            ),
+      body: SingleChildScrollView(
+        child: Container( 
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              _pages[_selectedIndex],
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: CurvedNavigationBar(
+                  backgroundColor: lightColorScheme.background,
+                  buttonBackgroundColor: Colors.black,
+                  color: Colors.black,
+                  animationDuration: const Duration(milliseconds: 300),
+                  items: <Widget>[
+                    _buildNavItem(Icons.home, 'Home'),
+                    _buildNavItem(Icons.info, 'About'),
+                    _buildNavItem(Icons.work, 'Service'),
+                    _buildNavItem(Icons.business, 'Portfolio'),
+                    _buildNavItem(Icons.payment, 'Payment'),
+                    _buildNavItem(Icons.contact_page, 'Contact'),
+                  ],
+                  onTap: (index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -75,15 +82,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
           color: Colors.white,
         ),
         const SizedBox(height: 5),
-        // Display label below the bottom navigation bar
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 10,
-          ),
-        ),
+        // Text(
+        //   label,
+        //   style: const TextStyle(
+        //     color: Colors.white,
+        //     fontWeight: FontWeight.bold,
+        //     fontSize: 10,
+        //   ),
+        // ),
       ],
     );
   }

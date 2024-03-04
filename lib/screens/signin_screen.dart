@@ -38,11 +38,14 @@ class _SignInScreenState extends State<SignInScreen> {
 
       final responseData = json.decode(response.body);
       print('Response data: $responseData');
+      print(responseData['user']['id']);
 
       if ((response.statusCode == 200 || response.statusCode == 201) &&
           responseData['status'] == 'success') {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
+        await prefs.setString('token', responseData['jwtToken']);
+        await prefs.setString('companyId', responseData['user']['id']);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
