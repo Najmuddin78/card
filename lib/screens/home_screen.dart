@@ -674,7 +674,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final url = Uri.parse(
           'https://digitalbusinesscard.webwhizinfosys.com/api/company/$companyId');
-      var request = http.MultipartRequest('POST', url)
+      var request = http.MultipartRequest('PATCH', url)
         ..files.add(await http.MultipartFile.fromPath('image', imagePath));
 
       request.headers.addAll({
