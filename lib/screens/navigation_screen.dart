@@ -35,7 +35,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
-        child: Container( 
+        child: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Stack(
@@ -81,7 +81,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
           size: 20,
           color: Colors.white,
         ),
-        const SizedBox(height: 5),
         // Text(
         //   label,
         //   style: const TextStyle(

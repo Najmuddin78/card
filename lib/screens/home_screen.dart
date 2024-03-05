@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:card/screens/welcome_screen.dart';
 import 'package:card/theme/theme.dart';
 
@@ -56,6 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
     'Other',
   ];
 
+  bool _uploadingImage = false;
+
   @override
   void initState() {
     super.initState();
@@ -66,8 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final String? companyId = await getCompanyId();
       final String? token = await getToken();
-      // print(' User Token :$token');
-      // print('USer id  :$companyId');
 
       final url = Uri.parse(
           'https://digitalbusinesscard.webwhizinfosys.com/api/company/$companyId');
@@ -78,8 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       );
 
-      print('Respone Status :${response.statusCode}');
-      print('Respone body :${response.body}');
+      print('Response Status :${response.statusCode}');
+      print('Response body :${response.body}');
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -105,9 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<String?> getCompanyId() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(
-      'companyId',
-    );
+    return prefs.getString('companyId');
   }
 
   Future<String?> getToken() async {
@@ -115,39 +113,119 @@ class _HomeScreenState extends State<HomeScreen> {
     return prefs.getString('token');
   }
 
+  // Future<void> saveCompanyInfo() async {
+  //   try {
+  //     final String? token = await getToken();
+
+  //     final url = Uri.parse('');
+  //     final response = await http.patch(
+  //       url,
+  //       headers: {
+  //         HttpHeaders.authorizationHeader: 'Bearer $token',
+  //         HttpHeaders.contentTypeHeader: 'application/json',
+  //       },
+  //       body: json.encode({
+  //         "name": companyNameController.text,
+  //         "categoryName": _companyCategory,
+  //         "logo": _image?.path ?? "",
+  //         "color": _selectedColor.toString(),
+  //       }),
+  //     );
+
+  //     print('Response Status :${response.statusCode}');
+  //     print('Response body :${response.body}');
+
+  //     if (response.statusCode == 200) {
+  //       loadDataFromApi();
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(
+  //           content: Text('Company information saved successfully!'),
+  //           duration: Duration(seconds: 2),
+  //         ),
+  //       );
+  //     } else {
+  //       throw Exception('Failed to save company information');
+  //     }
+  //   } catch (error) {
+  //     print('Error: $error');
+  //   }
+  // }
+
+  // Future<void> saveSocialMedia() async {
+  //   try {
+  //     final String? token = await getToken();
+
+  //     final url = Uri.parse('');
+  //     final response = await http.patch(
+  //       url,
+  //       headers: {
+  //         HttpHeaders.authorizationHeader: 'Bearer $token',
+  //         HttpHeaders.contentTypeHeader: 'application/json',
+  //       },
+  //       body: json.encode({
+  //         "whatsappNumber": whatsappController.text,
+  //         "facebook": facebookController.text,
+  //         "instagram": instagramController.text,
+  //         "twitter": twitterController.text,
+  //         "youtube": youtubeController.text,
+  //       }),
+  //     );
+
+  //     print('Response Status :${response.statusCode}');
+  //     print('Response body :${response.body}');
+
+  //     if (response.statusCode == 200) {
+  //       loadDataFromApi();
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(
+  //           content: Text('Social media links saved successfully!'),
+  //           duration: Duration(seconds: 2),
+  //         ),
+  //       );
+  //     } else {
+  //       throw Exception('Failed to save social media links');
+  //     }
+  //   } catch (error) {
+  //     print('Error: $error');
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        leading: Image.asset(
-          'assets/images/logo.png',
-          width: 40,
-          height: 40,
-        ),
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            onPressed: () {
-              _logout(context);
-            },
-            icon: const Icon(Icons.logout),
+    return ModalProgressHUD(
+      inAsyncCall: _uploadingImage,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Home'),
+          leading: Image.asset(
+            'assets/images/logo.png',
+            width: 40,
+            height: 40,
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: _buildForm(),
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+          actions: [
+            IconButton(
+              onPressed: () {
+                _logout(context);
+              },
+              icon: const Icon(Icons.logout),
             ),
-            const SizedBox(height: 20),
-            _buildSocialMediaSection(),
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: _buildForm(),
+              ),
+              const SizedBox(height: 20),
+              _buildSocialMediaSection(),
+            ],
+          ),
         ),
       ),
     );
@@ -206,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             _buildButton(
               onPressed: () {
-                _saveChangesFormData();
+                //saveCompanyInfo();
               },
               text: 'Save Changes',
             ),
@@ -281,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16.0),
             _buildButton(
               onPressed: () {
-                _validateAndSaveSocialMediaData();
+               // saveSocialMedia();
               },
               text: 'Save Social Media',
             ),
@@ -355,18 +433,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           onPressed: () async {
-            final pickedFile =
-                await ImagePicker().pickImage(source: ImageSource.gallery);
+            final pickedFile = await ImagePicker()
+                .pickImage(source: ImageSource.gallery, imageQuality: 80);
             if (pickedFile != null) {
               setState(() {
                 _image = XFile(pickedFile.path);
               });
+              _uploadImageToApi(pickedFile.path);
             }
           },
           icon: const Icon(Icons.image),
           label: const Text('Choose Company Logo'),
         ),
         if (_image != null) _buildSelectedImage(),
+        if (_uploadingImage) CircularProgressIndicator(),
         const SizedBox(height: 20.0),
       ],
     );
@@ -581,5 +661,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Color hexToColor(String code) {
     return Color(int.parse(code.substring(1), radix: 16) + 0xFF000000);
+  }
+
+  Future<void> _uploadImageToApi(String imagePath) async {
+    setState(() {
+      _uploadingImage = true;
+    });
+
+    try {
+      final String? token = await getToken();
+      final String? companyId = await getCompanyId();
+      
+
+      final url = Uri.parse('https://digitalbusinesscard.webwhizinfosys.com/api/company/$companyId');
+      var request = http.MultipartRequest('GET', url)
+        ..files.add(await http.MultipartFile.fromPath('image', imagePath));
+
+      request.headers.addAll({
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+      });
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        setState(() {
+          _uploadingImage = false;
+        });
+        print('Image Uploaded Successfully!');
+      } else {
+        setState(() {
+          _uploadingImage = false;
+        });
+        print('Failed to upload image');
+      }
+    } catch (error) {
+      print('Error uploading image: $error');
+    }
   }
 }
