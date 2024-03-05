@@ -359,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16.0),
             _buildButton(
               onPressed: () {
-               // saveSocialMedia();
+                // saveSocialMedia();
               },
               text: 'Save Social Media',
             ),
@@ -671,10 +671,10 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final String? token = await getToken();
       final String? companyId = await getCompanyId();
-      
 
-      final url = Uri.parse('https://digitalbusinesscard.webwhizinfosys.com/api/company/$companyId');
-      var request = http.MultipartRequest('GET', url)
+      final url = Uri.parse(
+          'https://digitalbusinesscard.webwhizinfosys.com/api/company/$companyId');
+      var request = http.MultipartRequest('POST', url)
         ..files.add(await http.MultipartFile.fromPath('image', imagePath));
 
       request.headers.addAll({
