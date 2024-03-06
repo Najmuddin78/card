@@ -113,82 +113,86 @@ class _HomeScreenState extends State<HomeScreen> {
     return prefs.getString('token');
   }
 
-  // Future<void> saveCompanyInfo() async {
-  //   try {
-  //     final String? token = await getToken();
+  Future<void> saveCompanyInfo() async {
+    try {
+      final String? token = await getToken();
+      final String? companyId = await getCompanyId();
 
-  //     final url = Uri.parse('');
-  //     final response = await http.patch(
-  //       url,
-  //       headers: {
-  //         HttpHeaders.authorizationHeader: 'Bearer $token',
-  //         HttpHeaders.contentTypeHeader: 'application/json',
-  //       },
-  //       body: json.encode({
-  //         "name": companyNameController.text,
-  //         "categoryName": _companyCategory,
-  //         "logo": _image?.path ?? "",
-  //         "color": _selectedColor.toString(),
-  //       }),
-  //     );
+      final url = Uri.parse(
+          'https://digitalbusinesscard.webwhizinfosys.com/api/company//update-home-section-one/$companyId');
+      final response = await http.patch(
+        url,
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.contentTypeHeader: 'application/json',
+        },
+        body: json.encode({
+          "name": companyNameController.text,
+          "categoryName": _companyCategory,
+          "logo": _image?.path ?? "",
+          "color": _selectedColor.toString(),
+        }),
+      );
 
-  //     print('Response Status :${response.statusCode}');
-  //     print('Response body :${response.body}');
+      print('Response Status :${response.statusCode}');
+      print('Response body :${response.body}');
 
-  //     if (response.statusCode == 200) {
-  //       loadDataFromApi();
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(
-  //           content: Text('Company information saved successfully!'),
-  //           duration: Duration(seconds: 2),
-  //         ),
-  //       );
-  //     } else {
-  //       throw Exception('Failed to save company information');
-  //     }
-  //   } catch (error) {
-  //     print('Error: $error');
-  //   }
-  // }
+      if (response.statusCode == 200) {
+        loadDataFromApi();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Company information saved successfully!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        throw Exception('Failed to save company information');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
 
-  // Future<void> saveSocialMedia() async {
-  //   try {
-  //     final String? token = await getToken();
+  Future<void> saveSocialMedia() async {
+    try {
+      final String? token = await getToken();
+      final String? companyId = await getCompanyId();
 
-  //     final url = Uri.parse('');
-  //     final response = await http.patch(
-  //       url,
-  //       headers: {
-  //         HttpHeaders.authorizationHeader: 'Bearer $token',
-  //         HttpHeaders.contentTypeHeader: 'application/json',
-  //       },
-  //       body: json.encode({
-  //         "whatsappNumber": whatsappController.text,
-  //         "facebook": facebookController.text,
-  //         "instagram": instagramController.text,
-  //         "twitter": twitterController.text,
-  //         "youtube": youtubeController.text,
-  //       }),
-  //     );
+      final url = Uri.parse(
+          'https://digitalbusinesscard.webwhizinfosys.com/api/company/update-home-section-two/$companyId');
+      final response = await http.patch(
+        url,
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.contentTypeHeader: 'application/json',
+        },
+        body: json.encode({
+          "whatsappNumber": whatsappController.text,
+          "facebook": facebookController.text,
+          "instagram": instagramController.text,
+          "twitter": twitterController.text,
+          "youtube": youtubeController.text,
+        }),
+      );
 
-  //     print('Response Status :${response.statusCode}');
-  //     print('Response body :${response.body}');
+      print('Response Status :${response.statusCode}');
+      print('Response body :${response.body}');
 
-  //     if (response.statusCode == 200) {
-  //       loadDataFromApi();
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(
-  //           content: Text('Social media links saved successfully!'),
-  //           duration: Duration(seconds: 2),
-  //         ),
-  //       );
-  //     } else {
-  //       throw Exception('Failed to save social media links');
-  //     }
-  //   } catch (error) {
-  //     print('Error: $error');
-  //   }
-  // }
+      if (response.statusCode == 200) {
+        loadDataFromApi();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Social media links saved successfully!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        throw Exception('Failed to save social media links');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -284,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             _buildButton(
               onPressed: () {
-                //saveCompanyInfo();
+                saveCompanyInfo();
               },
               text: 'Save Changes',
             ),
@@ -359,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16.0),
             _buildButton(
               onPressed: () {
-                // saveSocialMedia();
+                saveSocialMedia();
               },
               text: 'Save Social Media',
             ),
@@ -433,20 +437,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           onPressed: () async {
-            final pickedFile = await ImagePicker()
-                .pickImage(source: ImageSource.gallery, imageQuality: 80);
+            final pickedFile =
+                await ImagePicker().pickImage(source: ImageSource.gallery);
             if (pickedFile != null) {
               setState(() {
                 _image = XFile(pickedFile.path);
               });
-              _uploadImageToApi(pickedFile.path);
+              saveCompanyInfo();
             }
           },
           icon: const Icon(Icons.image),
           label: const Text('Choose Company Logo'),
         ),
         if (_image != null) _buildSelectedImage(),
-        if (_uploadingImage) CircularProgressIndicator(),
+        if (_uploadingImage) const CircularProgressIndicator(),
         const SizedBox(height: 20.0),
       ],
     );
@@ -660,42 +664,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Color hexToColor(String code) {
-    return Color(int.parse(code.substring(1), radix: 16) + 0xFF000000);
-  }
+    String hexCode = code.replaceAll(RegExp(r'[^0-9a-fA-F]'), '');
 
-  Future<void> _uploadImageToApi(String imagePath) async {
-    setState(() {
-      _uploadingImage = true;
-    });
-
-    try {
-      final String? token = await getToken();
-      final String? companyId = await getCompanyId();
-
-      final url = Uri.parse(
-          'https://digitalbusinesscard.webwhizinfosys.com/api/company/$companyId');
-      var request = http.MultipartRequest('PATCH', url)
-        ..files.add(await http.MultipartFile.fromPath('image', imagePath));
-
-      request.headers.addAll({
-        HttpHeaders.authorizationHeader: 'Bearer $token',
-      });
-
-      var response = await request.send();
-
-      if (response.statusCode == 200) {
-        setState(() {
-          _uploadingImage = false;
-        });
-        print('Image Uploaded Successfully!');
-      } else {
-        setState(() {
-          _uploadingImage = false;
-        });
-        print('Failed to upload image');
-      }
-    } catch (error) {
-      print('Error uploading image: $error');
+    if (hexCode.length == 6) {
+      hexCode = 'ff$hexCode';
     }
+
+    return Color(int.parse(hexCode, radix: 16));
   }
 }
