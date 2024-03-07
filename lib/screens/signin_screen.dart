@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+  const SignInScreen({super.key});
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -38,7 +38,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
       final responseData = json.decode(response.body);
       print('Response data: $responseData');
-      print(responseData['user']['id']);
 
       if ((response.statusCode == 200 || response.statusCode == 201) &&
           responseData['status'] == 'success') {
@@ -46,6 +45,9 @@ class _SignInScreenState extends State<SignInScreen> {
         await prefs.setBool('isLoggedIn', true);
         await prefs.setString('token', responseData['jwtToken']);
         await prefs.setString('companyId', responseData['user']['id']);
+        print('isLoggedIn: ${prefs.getBool('isLoggedIn')}');
+        print('token: ${prefs.getString('token')}');
+        print('companyId: ${prefs.getString('companyId')}');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

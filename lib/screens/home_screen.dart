@@ -11,7 +11,7 @@ import 'package:card/screens/welcome_screen.dart';
 import 'package:card/theme/theme.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
     'Other',
   ];
 
-  bool _uploadingImage = false;
+  final bool _uploadingImage = false;
 
   @override
   void initState() {
@@ -458,15 +458,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSelectedImage() {
     return _image != null && File(_image!.path).existsSync()
-        ? Container(
-            margin: const EdgeInsets.only(top: 10.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Image.file(
-                File(_image!.path),
-                height: 250.0,
-                width: 250.0,
-                fit: BoxFit.cover,
+        ? GestureDetector(
+            onTap: () {
+              _showCompanyLogoImage();
+            },
+            child: Container(
+              margin: const EdgeInsets.only(top: 10.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.file(
+                  File(_image!.path),
+                  height: 150.0,
+                  width: 150.0,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           )
@@ -474,21 +479,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showCompanyLogoImage() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.8,
-            child: Image.file(
-              File(_image!.path),
-              fit: BoxFit.contain,
+    if (_image != null && File(_image!.path).existsSync()) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: SizedBox(
+              width: 300,
+              height: 300,
+              child: Image.file(
+                File(_image!.path),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    }
   }
 
   Widget _buildColorPicker() {

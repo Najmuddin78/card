@@ -18,13 +18,13 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
   String _website = '';
 
   final List<Map<String, dynamic>> _highlightFields = [
-    {'name': 'Products', 'count': 0, 'enabled': false},
-    {'name': 'Projects', 'count': 0, 'enabled': false},
-    {'name': 'Awards', 'count': 0, 'enabled': false},
-    {'name': 'Reviews', 'count': 0, 'enabled': false},
-    {'name': 'Team', 'count': 0, 'enabled': false},
-    {'name': 'Clients', 'count': 0, 'enabled': false},
-    {'name': 'Ratings', 'count': 0, 'enabled': false},
+    {'name': 'Products', 'count': '', 'enabled': false},
+    {'name': 'Projects', 'count': '', 'enabled': false},
+    {'name': 'Awards', 'count': '', 'enabled': false},
+    {'name': 'Reviews', 'count': '', 'enabled': false},
+    {'name': 'Team', 'count': '', 'enabled': false},
+    {'name': 'Clients', 'count': '', 'enabled': false},
+    {'name': 'Ratings', 'count': '', 'enabled': false},
   ];
 
   List<TextEditingController> _controllers = [];
@@ -286,7 +286,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                               .map((field) {
                                 return Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                      MainAxisAlignment.spaceEvenly,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Checkbox(
@@ -369,7 +369,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                        'Please select at least one checkbox.'),
+                                        'Please select at least four checkbox.'),
                                   ),
                                 );
                               } else if (!_controllers.every((controller) =>
