@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PortfolioScreen extends StatefulWidget {
-  const PortfolioScreen({Key? key}) : super(key: key);
+  const PortfolioScreen({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -249,8 +249,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
 class PortfolioDialog extends StatefulWidget {
   final Function(Portfolio) onPortfolioAdded;
 
-  const PortfolioDialog({Key? key, required this.onPortfolioAdded})
-      : super(key: key);
+  const PortfolioDialog({super.key, required this.onPortfolioAdded});
 
   @override
   State<PortfolioDialog> createState() {
@@ -434,11 +433,11 @@ class EditPortfolioDialog extends StatefulWidget {
   final Function onDelete;
 
   const EditPortfolioDialog({
-    Key? key,
+    super.key,
     required this.portfolio,
     required this.onPortfolioEdited,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   State<EditPortfolioDialog> createState() {

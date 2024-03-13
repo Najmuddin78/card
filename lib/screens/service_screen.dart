@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ServiceScreen extends StatefulWidget {
-  const ServiceScreen({Key? key}) : super(key: key);
+  const ServiceScreen({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -248,8 +248,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
 class ServiceDialog extends StatefulWidget {
   final Function(Service) onServiceAdded;
 
-  const ServiceDialog({Key? key, required this.onServiceAdded})
-      : super(key: key);
+  const ServiceDialog({super.key, required this.onServiceAdded});
 
   @override
   State<ServiceDialog> createState() {
@@ -434,11 +433,11 @@ class EditServiceDialog extends StatefulWidget {
   final Function onDelete;
 
   const EditServiceDialog({
-    Key? key,
+    super.key,
     required this.service,
     required this.onServiceEdited,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   State<EditServiceDialog> createState() {
