@@ -82,18 +82,18 @@ class _HomeScreenState extends State<HomeScreen> {
       print('Response body :${response.body}');
 
       if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
+        final responseData = json.decode(response.body)["company"];
 
         setState(() {
-          companyNameController.text = responseData["company"]["name"];
-          _companyCategory = responseData["company"]['categoryName'];
-          _image = XFile(responseData["company"]['logo']);
-          _selectedColor = hexToColor(responseData["company"]["color"]);
-          whatsappController.text = responseData["company"]['whatsappNumber'];
-          facebookController.text = responseData["company"]['facebook'];
-          instagramController.text = responseData["company"]['instagram'];
-          twitterController.text = responseData["company"]['twitter'];
-          youtubeController.text = responseData["company"]['youtube'];
+          companyNameController.text = responseData["name"];
+          _companyCategory = responseData['categoryName'];
+          _image = XFile(responseData['logo']);
+          _selectedColor = hexToColor(responseData["color"]);
+          whatsappController.text = responseData['whatsappNumber'];
+          facebookController.text = responseData['facebook'];
+          instagramController.text = responseData['instagram'];
+          twitterController.text = responseData['twitter'];
+          youtubeController.text = responseData['youtube'];
         });
       } else {
         throw Exception('Failed to load data');
@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: json.encode({
           "name": companyNameController.text,
           "categoryName": _companyCategory,
-         "logo": _image?.path ?? "",
+          "logo": _image?.path ?? "",
           "color": _selectedColor.toString(),
         }),
       );

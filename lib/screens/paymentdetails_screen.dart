@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PaymentDetailsScreen extends StatefulWidget {
-  const PaymentDetailsScreen({Key? key}) : super(key: key);
+  const PaymentDetailsScreen({super.key});
 
   @override
   State<PaymentDetailsScreen> createState() {
