@@ -1,31 +1,124 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:card/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AboutUsScreen extends StatefulWidget {
-  const AboutUsScreen({Key? key}) : super(key: key);
+  const AboutUsScreen({super.key});
 
   @override
   State<AboutUsScreen> createState() => _AboutUsScreenState();
 }
 
 class _AboutUsScreenState extends State<AboutUsScreen> {
-  String _bannerImage = '';
-  String _description = '';
-  String _city = '';
-  String _title = '';
-  String _website = '';
+  String bannerImage = '';
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController websiteController = TextEditingController();
 
-  final List<Map<String, dynamic>> _highlightFields = [
+  List<Map<String, dynamic>> _highlightFields = [
     {'name': 'Products', 'count': '', 'enabled': false},
     {'name': 'Projects', 'count': '', 'enabled': false},
     {'name': 'Awards', 'count': '', 'enabled': false},
     {'name': 'Reviews', 'count': '', 'enabled': false},
     {'name': 'Team', 'count': '', 'enabled': false},
     {'name': 'Clients', 'count': '', 'enabled': false},
-    {'name': 'Ratings', 'count': '', 'enabled': false},
+    // {'name': 'Ratings', 'count': '', 'enabled': false},
   ];
+
+  Future<String?> getCompanyId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('companyId');
+  }
+
+  Future<String?> getToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
+  Future<void> loadAboutusInfo() async {
+    try {
+      final String? companyId = await getCompanyId();
+      final String? token = await getToken();
+
+      if (companyId == null || token == null) {
+        throw Exception(" comapny id or token is null");
+      }
+      final url = Uri.parse(
+          'https://digitalbusinesscard.webwhizinfosys.com/api/about-us/$companyId');
+      final response = await http.get(
+        url,
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body)["companyAboutUs"];
+        print('Response Status :${response.statusCode}');
+        print('Response Data :${responseData}');
+        // print(responseData["companyAboutUs"]["companyId"]);
+        setState(() {
+          bannerImage = responseData["banner"];
+          descriptionController.text = responseData["description"];
+          titleController.text = responseData["title"];
+          cityController.text = responseData["city"];
+          websiteController.text = responseData["website"];
+          _highlightFields = responseData["highlights"];
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
+  Future<void> saveAboutUsInfo() async {
+    try {
+      final String? token = await getToken();
+      final String? companyId = await getCompanyId();
+
+      final url = Uri.parse(
+          'https://digitalbusinesscard.webwhizinfosys.com/api/about-us/details/$companyId');
+      final response = await http.patch(
+        url,
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.contentTypeHeader: 'application/json',
+        },
+        body: json.encode({
+          "banner": bannerImage,
+          "description": descriptionController.text,
+          "city": cityController.text,
+          "title": titleController.text,
+          "website": websiteController.text,
+          "highlights": _highlightFields
+        }),
+      );
+
+      // print('Response Status :${response.statusCode}');
+      // print('Response body :${response.body}');
+
+      if (response.statusCode == 200) {
+        loadAboutusInfo();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Aboutus information saved successfully!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        throw Exception('Failed to save Aboutus information');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
 
   List<TextEditingController> _controllers = [];
 
@@ -47,14 +140,14 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
       review: '',
       status: 'INACTIVE',
     ),
-    
   ];
 
-  final _formKey = GlobalKey<FormState>();
+  // final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
+    loadAboutusInfo();
     _controllers = List.generate(
       _highlightFields.length,
       (index) => TextEditingController(
@@ -125,17 +218,19 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16.0),
                         ),
-                        child: _bannerImage.isEmpty
-                            ? const Text('No image selected.')
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: Image.file(
-                                  File(_bannerImage),
-                                  width: double.infinity,
-                                  height: 200,
-                                  fit: BoxFit.cover,
+                        child: GestureDetector(
+                          child: bannerImage.isEmpty
+                              ? const Text('No image selected.')
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: Image.file(
+                                    File(bannerImage),
+                                    height: 150.0,
+                                    width: 150.0,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
+                        ),
                       ),
                       const SizedBox(height: 20.0),
                       ElevatedButton(
@@ -157,65 +252,30 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                       ),
                       const SizedBox(height: 20.0),
                       buildTextAreaFormField(
-                        'Description',
-                        (value) => _description = value ?? '',
-                        (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Description.';
-                          }
-                          return null;
-                        },
+                        'Enter Descrption',
+                        descriptionController,
                       ),
                       const SizedBox(height: 20.0),
                       buildTextFormField(
-                        'City',
-                        (value) => _city = value ?? '',
-                        (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter City.';
-                          }
-                          return null;
-                        },
+                        'Enter City',
+                        cityController,
                       ),
                       const SizedBox(height: 20.0),
                       buildTextFormField(
-                        'Title',
-                        (value) => _title = value ?? '',
-                        (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Title.';
-                          }
-                          return null;
-                        },
+                        'Enter Title',
+                        titleController,
                       ),
                       const SizedBox(height: 20.0),
                       buildTextFormField(
-                        'Website',
-                        (value) => _website = value ?? '',
-                        (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Website.';
-                          }
-                          return null;
-                        },
+                        'Enter Website',
+                        websiteController,
                       ),
                       const SizedBox(height: 20.0),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_bannerImage.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please select an image.'),
-                                ),
-                              );
-                            } else {
-                              if (_formKey.currentState!.validate()) {
-                                // All fields are valid, proceed with save
-                                // Handle saving form data
-                              }
-                            }
+                            saveAboutUsInfo();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: lightColorScheme.primary,
@@ -376,15 +436,15 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                                   controller.text.isNotEmpty &&
                                   int.tryParse(controller.text) != null &&
                                   int.parse(controller.text) >= 0 &&
-                                  int.parse(controller.text) <= 5)) {
+                                  int.parse(controller.text) < 6)) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                        'Please provide a valid rating for all fields.'),
+                                        'Please provide a 5 rating for all fields.'),
                                   ),
                                 );
                               } else {
-                                // Handle form submission
+                                saveAboutUsInfo();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content:
@@ -486,64 +546,73 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
     );
   }
 
-  TextFormField buildTextFormField(
-      String label,
-      void Function(String?) onSaved,
-      String? Function(String?)? validator,
-      ) {
-    return TextFormField(
-      style: const TextStyle(fontSize: 16),
-      decoration: InputDecoration(
-        hintText: 'Enter $label',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
+  Widget buildTextFormField(String hintText, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormField(
+          controller: controller,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter $hintText.';
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+            hintText: hintText,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+          ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 14,
-          horizontal: 20,
-        ),
-      ),
-      validator: validator,
-      onSaved: onSaved,
+        const SizedBox(height: 10),
+      ],
     );
   }
 
-  TextFormField buildTextAreaFormField(
-      String label,
-      void Function(String?) onSaved,
-      String? Function(String?)? validator,
-      ) {
-    return TextFormField(
-      style: const TextStyle(fontSize: 16),
-      maxLines: 5,
-      decoration: InputDecoration(
-        hintText: 'Enter $label',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
+  Widget buildTextAreaFormField(
+      String hintText, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormField(
+          maxLines: 8,
+          controller: controller,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter $hintText.';
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+            hintText: hintText,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+          ),
         ),
-        contentPadding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
-      ),
-      validator: validator,
-      onSaved: onSaved,
+        const SizedBox(height: 10),
+      ],
     );
   }
 
   Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image =
-    await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       setState(() {
-        _bannerImage = image.path;
+        bannerImage = image.path;
       });
+
+      await saveAboutUsInfo();
     }
   }
 
   void toggleTestimonialStatus(Testimonial testimonial) {
     setState(() {
       testimonial.status =
-      testimonial.status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+          testimonial.status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
     });
   }
 }

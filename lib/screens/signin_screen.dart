@@ -34,10 +34,10 @@ class _SignInScreenState extends State<SignInScreen> {
         },
       );
 
-      print('Response status code: ${response.statusCode}');
+     // print('Response status code: ${response.statusCode}');
 
       final responseData = json.decode(response.body);
-      print('Response data: $responseData');
+     // print('Response data: $responseData');
 
       if ((response.statusCode == 200 || response.statusCode == 201) &&
           responseData['status'] == 'success') {
@@ -45,9 +45,9 @@ class _SignInScreenState extends State<SignInScreen> {
         await prefs.setBool('isLoggedIn', true);
         await prefs.setString('token', responseData['jwtToken']);
         await prefs.setString('companyId', responseData['user']['id']);
-        print('isLoggedIn: ${prefs.getBool('isLoggedIn')}');
-        print('token: ${prefs.getString('token')}');
-        print('companyId: ${prefs.getString('companyId')}');
+        // print('isLoggedIn: ${prefs.getBool('isLoggedIn')}');
+        // print('token: ${prefs.getString('token')}');
+        // print('companyId: ${prefs.getString('companyId')}');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

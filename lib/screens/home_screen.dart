@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:card/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:card/screens/welcome_screen.dart';
 import 'package:card/theme/theme.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -129,13 +129,13 @@ class _HomeScreenState extends State<HomeScreen> {
         body: json.encode({
           "name": companyNameController.text,
           "categoryName": _companyCategory,
-          "logo": _image?.path ?? "",
+         "logo": _image?.path ?? "",
           "color": _selectedColor.toString(),
         }),
       );
 
-      print('Response Status :${response.statusCode}');
-      print('Response body :${response.body}');
+      // print('Response Status :${response.statusCode}');
+      // print('Response body :${response.body}');
 
       if (response.statusCode == 200) {
         loadDataFromApi();
@@ -175,8 +175,8 @@ class _HomeScreenState extends State<HomeScreen> {
         }),
       );
 
-      print('Response Status :${response.statusCode}');
-      print('Response body :${response.body}');
+      // print('Response Status :${response.statusCode}');
+      // print('Response body :${response.body}');
 
       if (response.statusCode == 200) {
         loadDataFromApi();
@@ -655,7 +655,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await prefs.remove('companyId');
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+      MaterialPageRoute(builder: (context) => const SignInScreen()),
     );
   }
 
