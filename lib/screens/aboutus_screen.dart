@@ -27,7 +27,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
     {'name': 'Reviews', 'count': '', 'enabled': false},
     {'name': 'Team', 'count': '', 'enabled': false},
     {'name': 'Clients', 'count': '', 'enabled': false},
-    // {'name': 'Ratings', 'count': '', 'enabled': false},
+    {'name': 'Ratings', 'count': '', 'enabled': false},
   ];
 
   Future<String?> getCompanyId() async {
@@ -68,7 +68,6 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
           titleController.text = responseData["title"];
           cityController.text = responseData["city"];
           websiteController.text = responseData["website"];
-          _highlightFields = responseData["highlights"];
         });
       } else {
         throw Exception('Failed to load data');
@@ -97,7 +96,12 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
           "city": cityController.text,
           "title": titleController.text,
           "website": websiteController.text,
-          "highlights": _highlightFields
+          "highlights": _highlightFields.map((field) {
+            return {
+              'name': field['name'],
+              'count': _controllers[_highlightFields.indexOf(field)].text,
+            };
+          }).toList(),
         }),
       );
 
@@ -141,8 +145,6 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
       status: 'INACTIVE',
     ),
   ];
-
-  // final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -365,9 +367,12 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                                                       'You can only select up to 4 checkboxes'),
                                                 ),
                                               );
+                                              value = false;
                                             }
                                           } else {
-                                            _selectedCheckboxCount--;
+                                            if (_selectedCheckboxCount > 3) {
+                                              _selectedCheckboxCount--;
+                                            }
                                             field['enabled'] = false;
                                           }
                                         });
@@ -429,18 +434,23 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                        'Please select at least four checkbox.'),
+                                        'Please select at least four checkboxes.'),
                                   ),
                                 );
-                              } else if (!_controllers.every((controller) =>
-                                  controller.text.isNotEmpty &&
-                                  int.tryParse(controller.text) != null &&
-                                  int.parse(controller.text) >= 0 &&
-                                  int.parse(controller.text) < 6)) {
+                              } else if (!_controllers.every((controller) {
+                                final String text = controller.text.trim();
+                                final int? rating =
+                                    text.isNotEmpty ? int.tryParse(text) : null;
+
+                                return text.isNotEmpty &&
+                                    rating != null &&
+                                    rating >= 0 &&
+                                    rating <= 5;
+                              })) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                        'Please provide a 5 rating for all fields.'),
+                                        'Please provide a rating between 0 and 5 for all fields.'),
                                   ),
                                 );
                               } else {
