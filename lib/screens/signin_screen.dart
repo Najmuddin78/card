@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:card/screens/forgot_password.dart';
 import 'package:card/screens/navigation_screen.dart';
 import 'package:card/screens/signup_screen.dart';
 import 'package:card/theme/theme.dart';
@@ -34,10 +35,10 @@ class _SignInScreenState extends State<SignInScreen> {
         },
       );
 
-     // print('Response status code: ${response.statusCode}');
+      // print('Response status code: ${response.statusCode}');
 
       final responseData = json.decode(response.body);
-     // print('Response data: $responseData');
+      // print('Response data: $responseData');
 
       if ((response.statusCode == 200 || response.statusCode == 201) &&
           responseData['status'] == 'success') {
@@ -119,7 +120,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('Email'),
                           hintText: 'Enter Email',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
@@ -152,7 +152,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('Password'),
                           hintText: 'Enter Password',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
@@ -197,8 +196,16 @@ class _SignInScreenState extends State<SignInScreen> {
                             ],
                           ),
                           GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ForgotPasswordScreen(),
+                                ),
+                              );
+                            },
                             child: Text(
-                              'Forget password?',
+                              'Forgot password?',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: lightColorScheme.primary,

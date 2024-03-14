@@ -241,7 +241,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                 ),
               ),
               const SizedBox(height: 40),
-              SingleChildScrollView( // Added SingleChildScrollView here
+              SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Container(
                   padding: const EdgeInsets.all(20.0),
@@ -310,8 +310,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                                   'Pending'
                                               ? Colors.red
                                               : Colors.green,
-                                          decoration:
-                                              TextDecoration.underline,
+                                          decoration: TextDecoration.underline,
                                         ),
                                       ),
                                     ),
@@ -336,8 +335,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                                   'Pending'
                                               ? Colors.red
                                               : Colors.green,
-                                          decoration:
-                                              TextDecoration.underline,
+                                          decoration: TextDecoration.underline,
                                         ),
                                       ),
                                     ),

@@ -60,7 +60,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('Full Name'),
                           hintText: 'Enter Full Name',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
@@ -90,7 +89,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('Email'),
                           hintText: 'Enter Email',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
@@ -120,7 +118,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('Password'),
                           hintText: 'Enter Password',
                           hintStyle: const TextStyle(
                             color: Colors.black26,

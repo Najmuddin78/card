@@ -73,7 +73,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16), // Same padding for all fields in this container
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -125,7 +125,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16), // Same padding for all fields in this container
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -230,7 +230,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
           borderRadius: BorderRadius.circular(10.0),
         ),
         errorText: errorText,
-        contentPadding: const EdgeInsets.all(20.0), 
+        contentPadding: const EdgeInsets.all(20.0),
       ),
     );
   }
@@ -243,7 +243,8 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -273,8 +274,6 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
         return;
       }
     });
-
-    // Implement action for saving bank payment details
   }
 
   void _saveUpiDetails() {
@@ -287,8 +286,6 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
         return;
       }
     });
-
-    // Implement action for saving UPI payment details
   }
 
   void _showImagePicker() {
