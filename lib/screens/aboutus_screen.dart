@@ -388,7 +388,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                                           controller: _controllers[
                                               _highlightFields.indexOf(field)],
                                           decoration: InputDecoration(
-                                            labelText: 'Count',
+                                            hintText: 'Count',
                                             border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(10.0),
@@ -408,9 +408,9 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                                             final int? rating =
                                                 int.tryParse(value);
                                             if (rating == null ||
-                                                rating < 0 ||
-                                                rating > 5) {
-                                              return 'Please enter a valid rating between 0 and 5';
+                                                rating > 0 ||
+                                                rating > 10) {
+                                              return 'Please enter a valid rating ';
                                             }
                                             return null;
                                           },
@@ -445,12 +445,11 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                                 return text.isNotEmpty &&
                                     rating != null &&
                                     rating >= 0 &&
-                                    rating <= 5;
+                                    rating <= 10;
                               })) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text(
-                                        'Please provide a rating between 0 and 5 for all fields.'),
+                                    content: Text('Please provide a ratings.'),
                                   ),
                                 );
                               } else {
