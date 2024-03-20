@@ -597,7 +597,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _saveChangesFormData() {
+  void saveChangesFormData() {
     if (_formKey.currentState!.validate()) {
       if (_image == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -631,7 +631,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _validateAndSaveSocialMediaData() {
+  void validateAndSaveSocialMediaData() {
     if (_socialMediaFormKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

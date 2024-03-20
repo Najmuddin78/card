@@ -61,13 +61,14 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
         final responseData = json.decode(response.body)["companyAboutUs"];
         print('Response Status :${response.statusCode}');
         print('Response Data :${responseData}');
-        // print(responseData["companyAboutUs"]["companyId"]);
+        //print(responseData["companyAboutUs"]["highlights"]);
         setState(() {
           bannerImage = responseData["banner"];
           descriptionController.text = responseData["description"];
           titleController.text = responseData["title"];
           cityController.text = responseData["city"];
           websiteController.text = responseData["website"];
+          _highlightFields = responseData["highlights"];
         });
       } else {
         throw Exception('Failed to load data');
@@ -225,8 +226,8 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                               ? const Text('No image selected.')
                               : ClipRRect(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  child: Image.file(
-                                    File(bannerImage),
+                                  child: Image.network(
+                                    bannerImage,
                                     height: 150.0,
                                     width: 150.0,
                                     fit: BoxFit.cover,
