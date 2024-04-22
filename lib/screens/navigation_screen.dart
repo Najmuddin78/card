@@ -1,3 +1,4 @@
+import 'package:card/screens/career.dart';
 import 'package:card/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:card/screens/aboutus_screen.dart';
@@ -27,6 +28,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     const PortfolioScreen(),
     const PaymentDetailsScreen(),
     const ContactUsScreen(),
+    const CareerPage(),
   ];
 
   @override
@@ -57,6 +59,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     _buildNavItem(Icons.business, 'Portfolio'),
                     _buildNavItem(Icons.payment, 'Payment'),
                     _buildNavItem(Icons.contact_page, 'Contact'),
+                    _buildNavItem(Icons.javascript, 'Career')
                   ],
                   onTap: (index) {
                     setState(() {

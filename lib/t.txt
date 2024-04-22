@@ -1,0 +1,64 @@
+import 'package:card/theme/theme.dart';
+import 'package:flutter/material.dart';
+import 'package:card/screens/aboutus_screen.dart';
+import 'package:card/screens/contactus_screen.dart';
+import 'package:card/screens/home_screen.dart';
+import 'package:card/screens/paymentdetails_screen.dart';
+import 'package:card/screens/portolio_screen.dart';
+import 'package:card/screens/service_screen.dart';
+
+class NavigationScreen extends StatefulWidget {
+  const NavigationScreen({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _NavigationScreenState();
+  }
+}
+
+class _NavigationScreenState extends State<NavigationScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    const HomeScreen(),
+    const AboutUsScreen(),
+    const ServiceScreen(),
+    const PortfolioScreen(),
+    const PaymentDetailsScreen(),
+    const ContactUsScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: <BottomNavigationBarItem>[
+          _buildNavItem(Icons.home, 'Home'),
+          _buildNavItem(Icons.info, 'About'),
+          _buildNavItem(Icons.work, 'Service'),
+          _buildNavItem(Icons.business, 'Portfolio'),
+          _buildNavItem(Icons.payment, 'Payment'),
+          _buildNavItem(Icons.contact_page, 'Contact'),
+        ],
+      ),
+    );
+  }
+
+  BottomNavigationBarItem _buildNavItem(IconData icon, String label) {
+    return BottomNavigationBarItem(
+      icon: Icon(icon),
+      label: label,
+    );
+  }
+}
