@@ -9,10 +9,11 @@ class CareerPage extends StatefulWidget {
 
 class _CareerPageState extends State<CareerPage> {
   // Define variables to store the user input
-  String? _name;
+
+  TextEditingController _name = TextEditingController();
+  TextEditingController _companyName = TextEditingController();
+  TextEditingController _contactInfo = TextEditingController();
   String? _jobTitle;
-  String? _companyName;
-  String? _contactInfo;
 
   // List of job titles for the dropdown
   final List<String> _jobTitles = [
@@ -66,13 +67,9 @@ class _CareerPageState extends State<CareerPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
-                      _buildTextField(
-                        labelText: 'Name',
-                        onChanged: (value) {
-                          setState(() {
-                            _name = value;
-                          });
-                        },
+                      _buildTextFormField(
+                        'Enter Name',
+                        _name,
                       ),
                       const SizedBox(height: 20),
                       _buildDropdown(
@@ -85,29 +82,18 @@ class _CareerPageState extends State<CareerPage> {
                           });
                         },
                       ),
-                      _buildTextField(
-                        labelText: 'Company Name',
-                        onChanged: (value) {
-                          setState(() {
-                            _companyName = value;
-                          });
-                        },
+                      _buildTextFormField(
+                        'Enter Comapny aname',
+                        _companyName,
                       ),
                       const SizedBox(height: 20),
-                      _buildTextField(
-                        labelText: 'Contact Information',
-                        onChanged: (value) {
-                          setState(() {
-                            _contactInfo = value;
-                          });
-                        },
+                      _buildTextFormField(
+                        'Enter Conatct info',
+                        _contactInfo,
                       ),
                       const SizedBox(height: 20),
                       _buildButton(
-                        onPressed: () {
-                          // Handle form submission here
-                          // You can use the _name, _jobTitle, _companyName, and _contactInfo variables
-                        },
+                        onPressed: () {},
                         text: 'Submit',
                       ),
                       const SizedBox(height: 20)
@@ -122,18 +108,28 @@ class _CareerPageState extends State<CareerPage> {
     );
   }
 
-  Widget _buildTextField({
-    required String labelText,
-    required ValueChanged<String> onChanged,
-  }) {
-    return TextFormField(
-      decoration: InputDecoration(
-        hintText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
+  Widget _buildTextFormField(
+      String hintText, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormField(
+          controller: controller,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter $hintText.';
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+            hintText: hintText,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+          ),
         ),
-      ),
-      onChanged: onChanged,
+        const SizedBox(height: 10),
+      ],
     );
   }
 
