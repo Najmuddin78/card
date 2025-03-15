@@ -1,6 +1,6 @@
 {
-    "name": "business_card",
-    "short_name": "business_card",
+    "name": "card",
+    "short_name": "card",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

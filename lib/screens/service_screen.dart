@@ -1,18 +1,18 @@
 import 'dart:io';
-import 'package:business_card/theme/theme.dart';
+import 'package:card/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ServicePage extends StatefulWidget {
-  const ServicePage({Key? key}) : super(key: key);
+class ServiceScreen extends StatefulWidget {
+  const ServiceScreen({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return _ServicePageState();
+    return _ServiceScreenState();
   }
 }
 
-class _ServicePageState extends State<ServicePage> {
+class _ServiceScreenState extends State<ServiceScreen> {
   List<Service> services = [];
 
   void addService(Service service) {
@@ -248,11 +248,12 @@ class _ServicePageState extends State<ServicePage> {
 class ServiceDialog extends StatefulWidget {
   final Function(Service) onServiceAdded;
 
-  const ServiceDialog({Key? key, required this.onServiceAdded})
-      : super(key: key);
+  const ServiceDialog({super.key, required this.onServiceAdded});
 
   @override
-  _ServiceDialogState createState() => _ServiceDialogState();
+  State<ServiceDialog> createState() {
+    return _ServiceDialogState();
+  }
 }
 
 class _ServiceDialogState extends State<ServiceDialog> {
@@ -432,14 +433,16 @@ class EditServiceDialog extends StatefulWidget {
   final Function onDelete;
 
   const EditServiceDialog({
-    Key? key,
+    super.key,
     required this.service,
     required this.onServiceEdited,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
-  _EditServiceDialogState createState() => _EditServiceDialogState();
+  State<EditServiceDialog> createState() {
+    return _EditServiceDialogState();
+  }
 }
 
 class _EditServiceDialogState extends State<EditServiceDialog> {

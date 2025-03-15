@@ -1,19 +1,18 @@
 import 'dart:io';
-import 'package:business_card/theme/theme.dart';
-
+import 'package:card/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class PortfolioPage extends StatefulWidget {
-  const PortfolioPage({Key? key}) : super(key: key);
+class PortfolioScreen extends StatefulWidget {
+  const PortfolioScreen({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return _PortfolioPageState();
+    return _PortfolioScreenState();
   }
 }
 
-class _PortfolioPageState extends State<PortfolioPage> {
+class _PortfolioScreenState extends State<PortfolioScreen> {
   List<Portfolio> portfolios = [];
 
   void addPortfolio(Portfolio portfolio) {
@@ -250,11 +249,12 @@ class _PortfolioPageState extends State<PortfolioPage> {
 class PortfolioDialog extends StatefulWidget {
   final Function(Portfolio) onPortfolioAdded;
 
-  const PortfolioDialog({Key? key, required this.onPortfolioAdded})
-      : super(key: key);
+  const PortfolioDialog({super.key, required this.onPortfolioAdded});
 
   @override
-  _PortfolioDialogState createState() => _PortfolioDialogState();
+  State<PortfolioDialog> createState() {
+    return _PortfolioDialogState();
+  }
 }
 
 class _PortfolioDialogState extends State<PortfolioDialog> {
@@ -433,14 +433,16 @@ class EditPortfolioDialog extends StatefulWidget {
   final Function onDelete;
 
   const EditPortfolioDialog({
-    Key? key,
+    super.key,
     required this.portfolio,
     required this.onPortfolioEdited,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
-  _EditPortfolioDialogState createState() => _EditPortfolioDialogState();
+  State<EditPortfolioDialog> createState() {
+    return _EditPortfolioDialogState();
+  }
 }
 
 class _EditPortfolioDialogState extends State<EditPortfolioDialog> {
